@@ -149,9 +149,9 @@ public class SoaLogAnalyser {
 
                 if (lineArray.length >= 4&& !timeDiffAllow(lineArray[0])) {
                     serviceName = lineArray[1];
-                    methodName = lineArray[2];
+                    methodName = lineArray[3];
                     try {
-                        consumedTime = extractime(lineArray[3]);
+                        consumedTime = extractime(lineArray[4]);
                     } catch (Exception e) {
                         System.out.println("error line but continue : " + line);
                         continue;
@@ -196,7 +196,7 @@ public class SoaLogAnalyser {
 
     public static long extractime(String timeString) {
         int len = timeString.length();
-        long time = Long.parseLong(timeString.substring(0, len - 2));
+        long time = Long.parseLong(timeString.substring(3, len - 2));
         return time;
     }
 
@@ -228,8 +228,8 @@ public class SoaLogAnalyser {
             String key = entry.getKey();
             List datas = entry.getValue();
             ServiceEntity serviceEntity = new ServiceEntity();
-            serviceEntity.setSeiveName(key.split(":")[1].split("-")[0]);
-            serviceEntity.setMethodName(key.split(":")[1].split("-")[1]);
+            serviceEntity.setSeiveName(key.split("-")[0]);
+            serviceEntity.setMethodName(key.split("-")[1]);
             serviceEntity.setMaxTime((Long) datas.get(0));
             serviceEntity.setMinTime((Long) datas.get(1));
             serviceEntity.setInvokeTimes((Integer) datas.get(2));

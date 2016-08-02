@@ -49,7 +49,7 @@
             <manifest>
               <addClasspath>true</addClasspath>
               <classpathPrefix></classpathPrefix>
-              <mainClass>pn.eric.web.log.KsLogAnalyser</mainClass>
+              <mainClass>pn.eric.web.log.SoaLogAnalyser</mainClass>
             </manifest>
           </archive>
         </configuration>
