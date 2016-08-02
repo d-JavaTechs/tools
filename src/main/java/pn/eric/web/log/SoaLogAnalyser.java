@@ -9,7 +9,6 @@ import pn.eric.web.log.vo.ServiceRequestEntity;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.sql.Time;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -17,7 +16,7 @@ import java.util.*;
 /**
  * Hello world!
  */
-public class LogAnalyser {
+public class SoaLogAnalyser {
 
 
     static DateFormat sdf = new SimpleDateFormat("HH:mm:ss");

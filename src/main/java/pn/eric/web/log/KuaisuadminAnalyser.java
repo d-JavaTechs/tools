@@ -15,7 +15,7 @@ import java.util.*;
 /**
  * Hello world!
  */
-public class AppKuaisuadmin {
+public class KuaisuadminAnalyser {
 
     public static void main(String[] args) {
 //      System.out.println(extractime("9580ms"));;

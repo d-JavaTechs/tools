@@ -1,5 +1,5 @@
 step1->
-grep '耗时:'  detail-dapeng-container.2016-08-02.log| grep -v qbScheduler>response3.log
+grep '耗时:'  /home/weihu/production-logs/service-slave/soa/detail-dapeng-container.2016-08-02.log| grep -v qbScheduler>response3.log
 
 08-02 02:14:05 811 trans-pool-1-thread-86 INFO - com.isuwang.soa.account.service.AccountService 1.0.0 getServiceMetadata 63 耗时:2ms
 08-02 02:14:05 827 trans-pool-1-thread-87 INFO - com.isuwang.soa.account.service.AccountService 1.0.0 unFreezeBalance 64 耗时:9ms
@@ -22,4 +22,12 @@ grep '耗时:'  detail-dapeng-container.2016-08-02.log| grep -v qbScheduler>resp
 
 
 step2->
-less response3.log| awk '{print $2" "$7" "$8"  "$9" "$11}'> service1.log
+less response3.log| awk '{print $2" "$7" "$9" "$11}'> service1.log
+
+14:38:02 com.isuwang.soa.kuaisuprice.service.KuaisuPriceService 1.0.0  queryKuaisuPrices 耗时:118ms
+14:48:01 com.isuwang.soa.kuaisuprice.service.KuaisuPriceService 1.0.0  queryKuaisuPrices 耗时:409ms
+14:53:39 com.isuwang.soa.kuaisuprice.service.KuaisuPriceService 1.0.0  queryKuaisuPrices 耗时:130ms
+14:53:58 com.isuwang.soa.kuaisuprice.service.KuaisuPriceService 1.0.0  queryKuaisuPrices 耗时:123ms
+14:54:42 com.isuwang.soa.kuaisuprice.service.KuaisuPriceService 1.0.0  queryKuaisuPrices 耗时:90ms
+14:56:37 com.isuwang.soa.kuaisuprice.service.KuaisuPriceService 1.0.0  queryKuaisuPrices 耗时:145ms
+14:57:19 com.isuwang.soa.kuaisuprice.service.KuaisuPriceService 1.0.0  queryKuaisuPrices 耗时:133ms
