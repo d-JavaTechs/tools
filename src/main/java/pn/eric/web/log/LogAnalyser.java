@@ -17,7 +17,7 @@ import java.util.*;
 /**
  * Hello world!
  */
-public class App {
+public class LogAnalyser {
 
 
     static DateFormat sdf = new SimpleDateFormat("HH:mm:ss");
@@ -46,7 +46,6 @@ public class App {
 
 
     public static void main(String[] args) {
-//      System.out.println(extractime("9580ms"));;
         if (args == null) {
             System.out.println("请输入将要分析的文件");
             System.exit(-1);
@@ -55,15 +54,19 @@ public class App {
             System.out.println(formatOutPut("------------------------------------------------------------------------------------------", 80));
             invokeAnalysisResponse(args[0]);
             System.out.println();
-            System.out.println(formatOutPut("服务请求次数统计 : ", 80));
-            System.out.println();
-            System.out.println(formatOutPut("------------------------------------------------------------------------------------------", 80));
-            System.out.println();
-            invokeAnalysisRequest(args[1]);
-            System.out.println();
-            System.out.println(formatOutPut("错误统计 : ", 80));
-            System.out.println(formatOutPut("------------------------------------------------------------------------------------------", 80));
-            invokeAnalysisErrors(args[2]);
+            if(args.length>=2){
+                System.out.println(formatOutPut("服务请求次数统计 : ", 80));
+                System.out.println();
+                System.out.println(formatOutPut("------------------------------------------------------------------------------------------", 80));
+                System.out.println();
+                invokeAnalysisRequest(args[1]);
+            }
+            if (args.length>=3){
+                System.out.println();
+                System.out.println(formatOutPut("错误统计 : ", 80));
+                System.out.println(formatOutPut("------------------------------------------------------------------------------------------", 80));
+                invokeAnalysisErrors(args[2]);
+            }
         }
     }
 

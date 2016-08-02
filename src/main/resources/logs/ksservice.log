@@ -1,0 +1,19 @@
+step1  -->
+      grep response /home/weihu/production-logs/service-master/services/detail-ksservices.2016-08-02.log |grep SESSIONID >response1.log
+
+08-02 04:40:56 591 pool-4-thread-4 INFO 145 - SESSIONID:a5533b61-f62f-4310-b6a0-4c379005ea28 response:ProductPriceServiceImpl queryKuaisuPrices 10.44.130.22 web 0 null 0 null 297ms {
+
+step2 -->
+       grep response /home/weihu/production-logs/service-master/services/detail-ksservices.2016-08-02.log |grep -v SESSIONID >response2.log
+
+08-02 03:19:01 119 pool-4-thread-3 INFO 147 - response:OrderExtraServiceImpl getTopOrderItem 10.116.72.100 web 0 null 0 null 292ms [
+
+
+step3-->
+less response1.log| awk '{print $2" "$9" "$10" "$17}'> service1.log
+less response2.log| awk '{print $2" "$8" "$9" "$16}'> service2.log
+
+ cat service2.log>>service1.log
+
+step4-->
+06:30:02 response:OrderExtraServiceImpl getTopOrderItem 282ms

@@ -1,0 +1,25 @@
+step1->
+grep '耗时:'  detail-dapeng-container.2016-08-02.log| grep -v qbScheduler>response3.log
+
+08-02 02:14:05 811 trans-pool-1-thread-86 INFO - com.isuwang.soa.account.service.AccountService 1.0.0 getServiceMetadata 63 耗时:2ms
+08-02 02:14:05 827 trans-pool-1-thread-87 INFO - com.isuwang.soa.account.service.AccountService 1.0.0 unFreezeBalance 64 耗时:9ms
+08-02 02:14:21 971 trans-pool-1-thread-88 INFO - com.isuwang.soa.parameter.service.ParameterService 1.0.0 findParameterByName 1 耗时:15ms
+08-02 02:14:22 005 trans-pool-1-thread-89 INFO - com.isuwang.soa.parameter.service.ParameterService 1.0.0 findParameterByName 2 耗时:6ms
+08-02 02:14:22 011 trans-pool-1-thread-90 INFO - com.isuwang.soa.parameter.service.ParameterService 1.0.0 findParameterByName 3 耗时:4ms
+08-02 02:14:22 027 trans-pool-1-thread-91 INFO - com.isuwang.soa.parameter.service.ParameterService 1.0.0 findParameterByName 4 耗时:7ms
+08-02 02:14:23 832 trans-pool-1-thread-92 INFO - com.isuwang.soa.kuaisuprice.service.KuaisuPriceService 1.0.0 queryKuaisuPrices 67 耗时:236ms
+08-02 02:14:35 289 trans-pool-1-thread-93 INFO - com.isuwang.soa.holiday.service.HolidayService 1.0.0 selectEntitiesByRange 68 耗时:6ms
+08-02 02:14:35 365 trans-pool-1-thread-94 INFO - com.isuwang.soa.holiday.service.HolidayService 1.0.0 selectEntitiesByRange 69 耗时:7ms
+08-02 02:14:50 911 trans-pool-1-thread-95 INFO - com.isuwang.soa.article.service.ArticleService 1.0.0 getArticleDetail 70 耗时:155ms
+08-02 02:20:46 639 trans-pool-1-thread-96 INFO - com.isuwang.soa.article.service.ArticleService 1.0.0 getArticleList 32 耗时:92ms
+08-02 03:00:07 280 trans-pool-1-thread-97 INFO - com.isuwang.soa.holiday.service.HolidayService 1.0.0 selectEntitiesByRange 356 耗时:6ms
+08-02 03:00:08 038 trans-pool-1-thread-98 INFO - com.isuwang.soa.holiday.service.HolidayService 1.0.0 selectEntitiesByRange 528 耗时:5ms
+08-02 03:00:08 206 trans-pool-1-thread-99 INFO - com.isuwang.soa.holiday.service.HolidayService 1.0.0 selectEntitiesByRange 529 耗时:5ms
+08-02 03:00:08 330 trans-pool-1-thread-100 INFO - com.isuwang.soa.holiday.service.HolidayService 1.0.0 selectEntitiesByRange 839409 耗时:6ms
+08-02 03:00:08 636 trans-pool-1-thread-1 INFO - com.isuwang.soa.holiday.service.HolidayService 1.0.0 selectEntitiesByRange 359 耗时:6ms
+
+
+
+
+step2->
+less response3.log| awk '{print $2" "$7" "$8"  "$9" "$11}'> service1.log
