@@ -11,7 +11,7 @@ import java.util.*;
 /**
  * Hello world!
  */
-public class AppKuaisuAnalyser {
+public class KuaisuAnalyser {
 
     public static void main(String[] args) {
         if (args == null) {
