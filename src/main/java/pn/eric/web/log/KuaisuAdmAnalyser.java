@@ -1,24 +1,19 @@
 package pn.eric.web.log;
 
 
-
-import pn.eric.web.log.vo.ServiceErrorEntity;
 import pn.eric.web.log.vo.URLEntity;
 
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
  * Hello world!
  */
-public class KuaisuAnalyser {
+public class KuaisuAdmAnalyser {
 
     public static void main(String[] args) {
-//      System.out.println(extractime("9580ms"));;
         if (args == null) {
             System.out.println("请输入将要分析的文件");
             System.exit(-1);
@@ -27,10 +22,6 @@ public class KuaisuAnalyser {
             System.out.println(formatOutPut("------------------------------------------------------------------------------------------", 80));
             invokeAnalysisResponse(args[0]);
             System.out.println();
-
-//            System.out.println(formatOutPut("错误统计 : ", 80));
-//            System.out.println(formatOutPut("------------------------------------------------------------------------------------------", 80));
-//            invokeAnalysisErrors(args[2]);
         }
     }
 
@@ -44,22 +35,20 @@ public class KuaisuAnalyser {
             List<String> lines = Files.readAllLines(Paths.get(fileFullName, new String[0]), StandardCharsets.UTF_8);
             String url;
             long consumedTime = 0;
-            String lineArray[];
             String key;
             for (int i = 0; i < lines.size(); i++) {
-                line = lines.get(i);
-                lineArray = line.split("\\s+");
-                int lineLength = lineArray.length;
-//                System.out.println(line);
-//                if (line.trim().startsWith("服务接口")) {
+                    line = lines.get(i);
+                   if (line.trim().startsWith("服务接口")) {
                     try {
-                        key = lineArray[1];
+                        key = line.split("\\s+")[0];
+                        key= key.substring(5);
                         if(key.indexOf("?")>-1){
                             key = key.substring(0,key.indexOf("?"));
                         }
-                        consumedTime = Long.parseLong(lineArray[lineLength-1]);
+                        consumedTime = extractime(line);
                     } catch (Exception e) {
                         e.printStackTrace();
+
                         System.out.println("error line but continue : " + line);
                         continue;
                     }
@@ -80,42 +69,28 @@ public class KuaisuAnalyser {
                         datas.add(1, consumedTime);//最小耗时
                         datas.add(2, 1);//调用次数
                         datas.add(3, consumedTime);//耗时平均耗时
+
                         map.put(key, datas);
                     }
                     ++i;
                     totoalLine++;
-//                } else {
-//                    illgalLine.add(line);
-//                }
+                } else {
+                    illgalLine.add(line);
+                }
             }
             printResult(map);
-//            printIllgalLine(illgalLine);
         } catch (Exception e) {
             System.out.println("error line : " + line);
             e.printStackTrace();
         }
+
     }
 
-
-    public static void printRequestResult(Map<String, Integer> map) {
-        List<URLEntity> list = new ArrayList<URLEntity>();
-
-        for (Map.Entry<String, Integer> entry : map.entrySet()) {
-            String key = entry.getKey();
-            URLEntity uRLEntity = new URLEntity();
-            uRLEntity.setUrl(key);
-            uRLEntity.setInvokeTimes(entry.getValue());
-            list.add(uRLEntity);
-        }
-        Collections.sort(list, new Comparator<URLEntity>() {
-            public int compare(URLEntity arg0, URLEntity arg1) {
-                return (arg1.getInvokeTimes() - arg0.getInvokeTimes());
-            }
-        });
-        System.out.println(formatOutPut("URL名", 100)  + formatOutPut("请求次数", 30));
-        for (URLEntity u : list) {
-            System.out.println(formatOutPut(u.getUrl(), 100)  + formatOutPut(u.getInvokeTimes() + "", 35));
-        }
+    public static long extractime(String line) {
+        String timeString = line.substring(line.lastIndexOf("服务耗时:")+5);
+        int len = timeString.length();
+        long time = Long.parseLong(timeString.substring(0, len - 2));
+        return time;
     }
 
     public static void printResult(Map<String, List> map) {
@@ -130,6 +105,7 @@ public class KuaisuAnalyser {
             urlEntity.setInvokeTimes((Integer) datas.get(2));
             urlEntity.setAverageTime((Long) datas.get(3) / (Integer) datas.get(2));
             list.add(urlEntity);
+//            System.out.println(entry.getKey() + " " + entry.getValue());
         }
 
         Collections.sort(list, new Comparator<URLEntity>() {
@@ -137,31 +113,9 @@ public class KuaisuAnalyser {
                 return ((Long) (arg1.getMaxTime() - arg0.getMaxTime())).intValue();
             }
         });
-        System.out.println(formatOutPut("URL名", 98) + formatOutPut("最大耗时", 10) + formatOutPut("最小耗时", 8) + formatOutPut("平均耗时", 10) + formatOutPut("响应次数", 8));
+        System.out.println(formatOutPut("URL名", 98) + formatOutPut("最大耗时", 12) + formatOutPut("最小耗时", 9) + formatOutPut("平均耗时", 8) + formatOutPut("响应次数", 12));
         for (URLEntity u : list) {
-            System.out.println(formatOutPut(u.getUrl(), 100) + formatOutPut(u.getMaxTime() + "", 12) + formatOutPut(u.getMinTime() + "", 12) + formatOutPut(u.getAverageTime() + "", 12) + formatOutPut(u.getInvokeTimes() + "", 12));
-        }
-    }
-
-    public static void printErrorResult(Map<String, Integer> map) {
-        List<ServiceErrorEntity> list = new ArrayList<ServiceErrorEntity>();
-
-        for (Map.Entry<String, Integer> entry : map.entrySet()) {
-            String key = entry.getKey();
-            ServiceErrorEntity serviceRequestEntity = new ServiceErrorEntity();
-            serviceRequestEntity.setSeiveName(key.split(":")[1].split("-")[0]);
-            serviceRequestEntity.setMethodName(key.split(":")[1].split("-")[1]);
-            serviceRequestEntity.setInvokeTimes(entry.getValue());
-            list.add(serviceRequestEntity);
-        }
-        Collections.sort(list, new Comparator<ServiceErrorEntity>() {
-            public int compare(ServiceErrorEntity arg0, ServiceErrorEntity arg1) {
-                return (arg1.getInvokeTimes() - arg0.getInvokeTimes());
-            }
-        });
-        System.out.println(formatOutPut("服务名", 34) + formatOutPut("方法名", 36) + formatOutPut("错误次数", 30));
-        for (ServiceErrorEntity u : list) {
-            System.out.println(formatOutPut(u.getSeiveName(), 35) + formatOutPut(u.getMethodName(), 40) + formatOutPut(u.getInvokeTimes() + "", 35));
+            System.out.println(formatOutPut(u.getUrl(), 100) + formatOutPut(u.getMaxTime() + "", 15) + formatOutPut(u.getMinTime() + "", 12) + formatOutPut(u.getAverageTime() + "", 12) + formatOutPut(u.getInvokeTimes() + "", 12));
         }
     }
 
