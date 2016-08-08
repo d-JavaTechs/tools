@@ -14,7 +14,6 @@ import java.util.*;
 public class AppKuaisuAnalyser {
 
     public static void main(String[] args) {
-      System.out.println(extractime("9580ms"));;
         if (args == null) {
             System.out.println("请输入将要分析的文件");
             System.exit(-1);
@@ -24,7 +23,6 @@ public class AppKuaisuAnalyser {
             invokeAnalysisResponse(args[0]);
             System.out.println();
         }
-//        System.out.println(420000/0.4);
     }
 
     public static void invokeAnalysisResponse(String fileFullName) {
@@ -39,49 +37,51 @@ public class AppKuaisuAnalyser {
             long consumedTime = 0;
             String key;
             for (int i = 0; i < lines.size(); i++) {
-                line = lines.get(i);
-//                System.out.println(line);
-//                if (line.trim().startsWith("服务接口")) {
-                try {
-                    key = line.split("\\s+")[1];
-                    if(key.indexOf("?")>-1){
-                        key = key.substring(0,key.indexOf("?"));
-                    }
-                    consumedTime = extractime(line);
-                } catch (Exception e) {
-                    e.printStackTrace();
+                    line = lines.get(i);
+                    System.out.println(line);
+                   if (line.trim().startsWith("服务接口")) {
+                    try {
+                        key = line.split("\\s+")[0];
+                        key= key.substring(5);
+                        if(key.indexOf("?")>-1){
+                            key = key.substring(0,key.indexOf("?"));
+                        }
+                        System.out.println("key:" + key);
 
-                    System.out.println("error line but continue : " + line);
-                    continue;
-                }
-                if (map.containsKey(key)) {
-                    List value = map.get(key);
-                    long currentMin = (Long) value.get(1);
-                    if (currentMin > consumedTime) {
-                        value.set(1, consumedTime);
-                    }
-                    int currentInvokeTimes = (Integer) value.get(2);
-                    value.set(2, ++currentInvokeTimes);
-                    value.set(3, (Long) value.get(3) + consumedTime);
+                        consumedTime = extractime(line);
+                    } catch (Exception e) {
+                        e.printStackTrace();
 
-                    map.put(key, value);
+                        System.out.println("error line but continue : " + line);
+                        continue;
+                    }
+                    if (map.containsKey(key)) {
+                        List value = map.get(key);
+                        long currentMin = (Long) value.get(1);
+                        if (currentMin > consumedTime) {
+                            value.set(1, consumedTime);
+                        }
+                        int currentInvokeTimes = (Integer) value.get(2);
+                        value.set(2, ++currentInvokeTimes);
+                        value.set(3, (Long) value.get(3) + consumedTime);
+
+                        map.put(key, value);
+                    } else {
+                        List datas = new ArrayList();
+                        datas.add(0, consumedTime);//最大耗时
+                        datas.add(1, consumedTime);//最小耗时
+                        datas.add(2, 1);//调用次数
+                        datas.add(3, consumedTime);//耗时平均耗时
+
+                        map.put(key, datas);
+                    }
+                    ++i;
+                    totoalLine++;
                 } else {
-                    List datas = new ArrayList();
-                    datas.add(0, consumedTime);//最大耗时
-                    datas.add(1, consumedTime);//最小耗时
-                    datas.add(2, 1);//调用次数
-                    datas.add(3, consumedTime);//耗时平均耗时
-
-                    map.put(key, datas);
+                    illgalLine.add(line);
                 }
-                ++i;
-                totoalLine++;
-//                } else {
-//                    illgalLine.add(line);
-//                }
             }
             printResult(map);
-//            printIllgalLine(illgalLine);
         } catch (Exception e) {
             System.out.println("error line : " + line);
             e.printStackTrace();
@@ -89,27 +89,18 @@ public class AppKuaisuAnalyser {
 
     }
 
-
-    public static long extractime(String timeString) {
-//        int len = timeString.length();
-//        long time = Long.parseLong(timeString.substring(0, len - 2));
-//        return time;
-        if (timeString.indexOf(" - ") != -1) {
-            return Long.parseLong(timeString.substring(timeString.lastIndexOf(" - ") + 3));
-        } else {
-            return 0;
-        }
+    public static long extractime(String line) {
+        String timeString = line.substring(line.lastIndexOf("服务耗时:")+5);
+        int len = timeString.length();
+        long time = Long.parseLong(timeString.substring(0, len - 2));
+        return time;
     }
-
 
     public static void printResult(Map<String, List> map) {
         List<URLEntity> list = new ArrayList<URLEntity>();
         for (Map.Entry<String, List> entry : map.entrySet()) {
             String key = entry.getKey();
             List datas = entry.getValue();
-//            ServiceEntity serviceEntity = new ServiceEntity();
-//            serviceEntity.setSeiveName(key.split(":")[1].split("-")[0]);
-//            serviceEntity.setMethodName(key.split(":")[1].split("-")[1]);
             URLEntity urlEntity = new URLEntity();
             urlEntity.setUrl(key);
             urlEntity.setMaxTime((Long) datas.get(0));
@@ -125,9 +116,9 @@ public class AppKuaisuAnalyser {
                 return ((Long) (arg1.getMaxTime() - arg0.getMaxTime())).intValue();
             }
         });
-        System.out.println(formatOutPut("URL名", 100) + formatOutPut("最大耗时", 12) + formatOutPut("最小耗时", 12) + formatOutPut("平均耗时", 12) + formatOutPut("响应次数", 12));
+        System.out.println(formatOutPut("URL名", 98) + formatOutPut("最大耗时", 12) + formatOutPut("最小耗时", 9) + formatOutPut("平均耗时", 8) + formatOutPut("响应次数", 12));
         for (URLEntity u : list) {
-            System.out.println(formatOutPut(u.getUrl(), 100) + formatOutPut(u.getMaxTime() + "", 12) + formatOutPut(u.getMinTime() + "", 12) + formatOutPut(u.getAverageTime() + "", 12) + formatOutPut(u.getInvokeTimes() + "", 12));
+            System.out.println(formatOutPut(u.getUrl(), 100) + formatOutPut(u.getMaxTime() + "", 15) + formatOutPut(u.getMinTime() + "", 12) + formatOutPut(u.getAverageTime() + "", 12) + formatOutPut(u.getInvokeTimes() + "", 12));
         }
     }
 
