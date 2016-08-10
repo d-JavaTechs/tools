@@ -9,9 +9,8 @@ import java.nio.file.Paths;
 import java.util.*;
 
 /**
- * Hello world!
  */
-public class KuaisuAdmAnalyser {
+public class KuaisuAdmAggregation {
 
     public static void main(String[] args) {
         if (args == null) {
@@ -20,25 +19,27 @@ public class KuaisuAdmAnalyser {
         } else {
             System.out.println(formatOutPut("URL响应统计 : ", 80));
             System.out.println(formatOutPut("------------------------------------------------------------------------------------------", 80));
-            invokeAnalysisResponse(args[0]);
+            invokeAnalysisResponse(args);
             System.out.println();
         }
     }
 
-    public static void invokeAnalysisResponse(String fileFullName) {
+    public static void invokeAnalysisResponse(String... fileFullNames) {
         // 最大耗时   最小耗时  响应次数
         Map<String, List> map = new HashMap<String, List>();
         List<String> illgalLine = new ArrayList<String>();
-        int totoalLine = 0;
-        String line = null;
-        try {
-            List<String> lines = Files.readAllLines(Paths.get(fileFullName, new String[0]), StandardCharsets.UTF_8);
-            String url;
-            long consumedTime = 0;
-            String key;
-            for (int i = 0; i < lines.size(); i++) {
+
+        for (String fileFullName: fileFullNames) {
+            int totoalLine = 0;
+            String line = null;
+            try {
+                List<String> lines = Files.readAllLines(Paths.get(fileFullName, new String[0]), StandardCharsets.UTF_8);
+                String url;
+                long consumedTime = 0;
+                String key;
+                for (int i = 0; i < lines.size(); i++) {
                     line = lines.get(i);
-                   if (line.trim().startsWith("服务接口")) {
+                    if (line.trim().startsWith("服务接口")) {
                         try {
                             key = line.split("\\s+")[0];
                             key= key.substring(5);
@@ -52,47 +53,47 @@ public class KuaisuAdmAnalyser {
                             System.out.println("error line but continue : " + line);
                             continue;
                         }
-                       if (map.containsKey(key)) {
+                        if (map.containsKey(key)) {
 
-                           List value = map.get(key);
-                           long currentMaxTime = (Long) value.get(0);
-                           if (currentMaxTime < consumedTime) {
-                               value.set(0, consumedTime);
-                           }
+                            List value = map.get(key);
+                            long currentMaxTime = (Long) value.get(0);
+                            if (currentMaxTime < consumedTime) {
+                                value.set(0, consumedTime);
+                            }
 
-                           long currentMinTime = (Long) value.get(1);
-                           if (currentMinTime > consumedTime) {
-                               value.set(1, consumedTime);
-                           }
+                            long currentMinTime = (Long) value.get(1);
+                            if (currentMinTime > consumedTime) {
+                                value.set(1, consumedTime);
+                            }
 
-                           //调用次数
-                           int currentInvokeTimes = (Integer) value.get(2);
-                           value.set(2, ++currentInvokeTimes);
+                            //调用次数
+                            int currentInvokeTimes = (Integer) value.get(2);
+                            value.set(2, ++currentInvokeTimes);
 
-                           //累计耗时
-                           value.set(3, (Long) value.get(3) + consumedTime);
+                            //累计耗时
+                            value.set(3, (Long) value.get(3) + consumedTime);
 
-                           map.put(key, value);
-                       } else {
-                           List datas = new ArrayList();
-                           datas.add(0, consumedTime);//最大耗时
-                           datas.add(1, consumedTime);//最小耗时
-                           datas.add(2, 1);//调用次数
-                           datas.add(3, consumedTime);//累计耗时
+                            map.put(key, value);
+                        } else {
+                            List datas = new ArrayList();
+                            datas.add(0, consumedTime);//最大耗时
+                            datas.add(1, consumedTime);//最小耗时
+                            datas.add(2, 1);//调用次数
+                            datas.add(3, consumedTime);//累计耗时
 
-                           map.put(key, datas);
-                       }
+                            map.put(key, datas);
+                        }
                         totoalLine++;
-                } else {
-                    illgalLine.add(line);
+                    } else {
+                        illgalLine.add(line);
+                    }
                 }
+            } catch (Exception e) {
+                System.out.println("error line : " + line);
+                e.printStackTrace();
             }
-            printResult(map);
-        } catch (Exception e) {
-            System.out.println("error line : " + line);
-            e.printStackTrace();
         }
-
+        printResult(map);
     }
 
     public static long extractime(String line) {
@@ -114,7 +115,6 @@ public class KuaisuAdmAnalyser {
             urlEntity.setInvokeTimes((Integer) datas.get(2));
             urlEntity.setAverageTime((Long) datas.get(3) / (Integer) datas.get(2));
             list.add(urlEntity);
-//            System.out.println(entry.getKey() + " " + entry.getValue());
         }
 
         Collections.sort(list, new Comparator<URLEntity>() {

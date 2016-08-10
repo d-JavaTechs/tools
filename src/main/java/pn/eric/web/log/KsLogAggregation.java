@@ -9,15 +9,13 @@ import pn.eric.web.log.vo.ServiceRequestEntity;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.sql.Time;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
  */
-public class KsLogAnalyser {
-
+public class KsLogAggregation {
 
     static DateFormat sdf = new SimpleDateFormat("HH:mm:ss");
     static Date time1;
@@ -51,21 +49,7 @@ public class KsLogAnalyser {
         } else {
             System.out.println(formatOutPut("服务响应统计 : ", 80));
             System.out.println(formatOutPut("------------------------------------------------------------------------------------------", 80));
-            invokeAnalysisResponse(args[0]);
-            System.out.println();
-            if(args.length>=2){
-                System.out.println(formatOutPut("服务请求次数统计 : ", 80));
-                System.out.println();
-                System.out.println(formatOutPut("------------------------------------------------------------------------------------------", 80));
-                System.out.println();
-                invokeAnalysisRequest(args[1]);
-            }
-            if (args.length>=3){
-                System.out.println();
-                System.out.println(formatOutPut("错误统计 : ", 80));
-                System.out.println(formatOutPut("------------------------------------------------------------------------------------------", 80));
-                invokeAnalysisErrors(args[2]);
-            }
+            invokeAnalysisResponse(args);
         }
     }
 
@@ -129,84 +113,82 @@ public class KsLogAnalyser {
         }
     }
 
-    public static void invokeAnalysisResponse(String fileFullName) {
-        long currentMax =100;
-        long currentMin = 100;
+    public static void invokeAnalysisResponse(String... fileFullNames) {
         Map<String, List> map = new HashMap<String, List>();
         List<String> illgalLine = new ArrayList<String>();
         String line = null;
-        try {
-            List<String> lines = Files.readAllLines(Paths.get(fileFullName, new String[0]), StandardCharsets.UTF_8);
-            String serviceName;
-            String methodName;
-            String consumedTTime;
-            long consumedTime = 0;
-            String key;
-            for (int i = 0; i < lines.size(); i++) {
+        String serviceName;
+        String methodName;
+        String consumedTTime;
+        for (String fileFullName: fileFullNames){
+            try {
+                List<String> lines = Files.readAllLines(Paths.get(fileFullName, new String[0]), StandardCharsets.UTF_8);
 
-                line = lines.get(i);
-
-                String[] lineArray = line.split("\\s+");
-                if (lineArray.length >= 17) {
-                    serviceName = lineArray[6].substring(10);
-                    methodName = lineArray[7].substring(0, lineArray[7].length() - 1);
-                    consumedTTime = lineArray[15].substring(1);
-                }else if(lineArray.length == 10){
-                    serviceName = lineArray[6].substring(10);
-                    methodName = lineArray[7].substring(0, lineArray[7].length() - 1);
-                    consumedTTime = lineArray[8].substring(1);
-                }else{
-                    illgalLine.add(line);
-                    continue;
-                }
-
-                try {
-                    consumedTime = extractime(consumedTTime);
-                } catch (Exception e) {
-                    System.out.println("error line but continue : " + line);
-                    continue;
-                }
-
-                key = serviceName + "-" + methodName;
-                //value  最小耗时 响应次数 累计耗时
-                if (map.containsKey(key)) {
-
-                    List value = map.get(key);
-                    long currentMaxTime = (Long) value.get(0);
-                    if (currentMaxTime < consumedTime) {
-                        value.set(0, consumedTime);
+                long consumedTime = 0;
+                String key;
+                for (int i = 0; i < lines.size(); i++) {
+                    line = lines.get(i);
+                    String[] lineArray = line.split("\\s+");
+                    if (lineArray.length >= 17) {
+                        serviceName = lineArray[6].substring(10);
+                        methodName = lineArray[7].substring(0, lineArray[7].length() - 1);
+                        consumedTTime = lineArray[15].substring(1);
+                    }else if(lineArray.length == 10){
+                        serviceName = lineArray[6].substring(10);
+                        methodName = lineArray[7].substring(0, lineArray[7].length() - 1);
+                        consumedTTime = lineArray[8].substring(1);
+                    }else{
+                        illgalLine.add(line);
+                        continue;
+                    }
+                    try {
+                        consumedTime = extractime(consumedTTime);
+                    } catch (Exception e) {
+                        System.out.println("error line but continue : " + line);
+                        continue;
                     }
 
-                    long currentMinTime = (Long) value.get(1);
-                    if (currentMinTime > consumedTime) {
-                        value.set(1, consumedTime);
+                    key = serviceName + "-" + methodName;
+                    //value  最小耗时 响应次数 累计耗时
+                    if (map.containsKey(key)) {
+
+                        List value = map.get(key);
+                        long currentMaxTime = (Long) value.get(0);
+                        if (currentMaxTime < consumedTime) {
+                            value.set(0, consumedTime);
+                        }
+
+                        long currentMinTime = (Long) value.get(1);
+                        if (currentMinTime > consumedTime) {
+                            value.set(1, consumedTime);
+                        }
+
+                        //调用次数
+                        int currentInvokeTimes = (Integer) value.get(2);
+                        value.set(2, ++currentInvokeTimes);
+
+                        //累计耗时
+                        value.set(3, (Long) value.get(3) + consumedTime);
+
+                        map.put(key, value);
+                    } else {
+                        List datas = new ArrayList();
+                        datas.add(0, consumedTime);//最大耗时
+                        datas.add(1, consumedTime);//最小耗时
+                        datas.add(2, 1);//调用次数
+                        datas.add(3, consumedTime);//累计耗时
+
+                        map.put(key, datas);
                     }
-
-                    //调用次数
-                    int currentInvokeTimes = (Integer) value.get(2);
-                    value.set(2, ++currentInvokeTimes);
-
-                    //累计耗时
-                    value.set(3, (Long) value.get(3) + consumedTime);
-
-                    map.put(key, value);
-                } else {
-                    List datas = new ArrayList();
-                    datas.add(0, consumedTime);//最大耗时
-                    datas.add(1, consumedTime);//最小耗时
-                    datas.add(2, 1);//调用次数
-                    datas.add(3, consumedTime);//累计耗时
-
-                    map.put(key, datas);
                 }
+
+            } catch (Exception e) {
+                System.out.println("error line : " + line);
+                e.printStackTrace();
             }
-            printResult(map);
-            printIllgalLine(illgalLine);
-        } catch (Exception e) {
-            System.out.println("error line : " + line);
-            e.printStackTrace();
         }
-
+        printResult(map);
+        printIllgalLine(illgalLine);
     }
 
     public static long extractime(String timeString) {

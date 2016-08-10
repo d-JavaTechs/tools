@@ -8,14 +8,12 @@ import pn.eric.web.log.vo.URLEntity;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
  * Hello world!
  */
-public class KuaisuAnalyser {
+public class KuaisuAggregation {
 
     public static void main(String[] args) {
 //      System.out.println(extractime("9580ms"));;
@@ -25,7 +23,7 @@ public class KuaisuAnalyser {
         } else {
             System.out.println(formatOutPut("URL响应统计 : ", 80));
             System.out.println(formatOutPut("------------------------------------------------------------------------------------------", 80));
-            invokeAnalysisResponse(args[0]);
+            invokeAnalysisResponse(args);
             System.out.println();
 
 //            System.out.println(formatOutPut("错误统计 : ", 80));
@@ -34,22 +32,24 @@ public class KuaisuAnalyser {
         }
     }
 
-    public static void invokeAnalysisResponse(String fileFullName) {
+    public static void invokeAnalysisResponse(String... fileFullNames) {
         // 最大耗时   最小耗时  响应次数
         Map<String, List> map = new HashMap<String, List>();
         List<String> illgalLine = new ArrayList<String>();
         int totoalLine = 0;
         String line = null;
-        try {
-            List<String> lines = Files.readAllLines(Paths.get(fileFullName, new String[0]), StandardCharsets.UTF_8);
-            String url;
-            long consumedTime = 0;
-            String lineArray[];
-            String key;
-            for (int i = 0; i < lines.size(); i++) {
-                line = lines.get(i);
-                lineArray = line.split("\\s+");
-                int lineLength = lineArray.length;
+
+        for (String fileFullName: fileFullNames) {
+            try {
+                List<String> lines = Files.readAllLines(Paths.get(fileFullName, new String[0]), StandardCharsets.UTF_8);
+                String url;
+                long consumedTime = 0;
+                String lineArray[];
+                String key;
+                for (int i = 0; i < lines.size(); i++) {
+                    line = lines.get(i);
+                    lineArray = line.split("\\s+");
+                    int lineLength = lineArray.length;
                     try {
                         key = lineArray[1];
                         if(key.indexOf("?")>-1){
@@ -92,12 +92,13 @@ public class KuaisuAnalyser {
                         map.put(key, datas);
                     }
                     totoalLine++;
+                }
+            } catch (Exception e) {
+                System.out.println("error line : " + line);
+                e.printStackTrace();
             }
-            printResult(map);
-        } catch (Exception e) {
-            System.out.println("error line : " + line);
-            e.printStackTrace();
         }
+        printResult(map);
     }
 
 

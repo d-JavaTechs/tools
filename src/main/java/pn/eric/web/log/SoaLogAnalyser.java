@@ -147,26 +147,35 @@ public class SoaLogAnalyser {
 
                 String[] lineArray = line.split("\\s+");
 
-                if (lineArray.length >= 4&& !timeDiffAllow(lineArray[0])) {
-                    serviceName = lineArray[1];
-                    methodName = lineArray[3];
+                if (lineArray.length >= 2) {
+                    serviceName = lineArray[0].split(":")[0].substring(0,lineArray[0].split(":")[0].lastIndexOf("."));
+                    methodName = lineArray[0].split(":")[0].substring(lineArray[0].split(":")[0].lastIndexOf(".")+1);
                     try {
-                        consumedTime = extractime(lineArray[4]);
+                        consumedTime = extractime(lineArray[1]);
                     } catch (Exception e) {
                         System.out.println("error line but continue : " + line);
                         continue;
                     }
-
                     key = serviceName + "-" + methodName;
 
                     if (map.containsKey(key)) {
+
                         List value = map.get(key);
-                        long currentMin = (Long) value.get(1);
-                        if (currentMin > consumedTime) {
+                        long currentMaxTime = (Long) value.get(0);
+                        if (currentMaxTime < consumedTime) {
+                            value.set(0, consumedTime);
+                        }
+
+                        long currentMinTime = (Long) value.get(1);
+                        if (currentMinTime > consumedTime) {
                             value.set(1, consumedTime);
                         }
+
+                        //调用次数
                         int currentInvokeTimes = (Integer) value.get(2);
                         value.set(2, ++currentInvokeTimes);
+
+                        //累计耗时
                         value.set(3, (Long) value.get(3) + consumedTime);
 
                         map.put(key, value);
@@ -175,7 +184,7 @@ public class SoaLogAnalyser {
                         datas.add(0, consumedTime);//最大耗时
                         datas.add(1, consumedTime);//最小耗时
                         datas.add(2, 1);//调用次数
-                        datas.add(3, consumedTime);//耗时平均耗时
+                        datas.add(3, consumedTime);//累计耗时
 
                         map.put(key, datas);
                     }
@@ -196,7 +205,7 @@ public class SoaLogAnalyser {
 
     public static long extractime(String timeString) {
         int len = timeString.length();
-        long time = Long.parseLong(timeString.substring(3, len - 2));
+        long time = Long.parseLong(timeString.substring(0, len - 2));
         return time;
     }
 
@@ -243,9 +252,9 @@ public class SoaLogAnalyser {
                 return ((Long) (arg1.getMaxTime() - arg0.getMaxTime())).intValue();
             }
         });
-        System.out.println(formatOutPut("服务名", 34) + formatOutPut("方法名", 35) + formatOutPut("最大耗时", 12) + formatOutPut("最小耗时", 12) + formatOutPut("平均耗时", 12) + formatOutPut("响应次数", 12));
+        System.out.println(formatOutPut("服务名", 80) + formatOutPut("方法名", 35) + formatOutPut("最大耗时", 10) + formatOutPut("最小耗时", 8) + formatOutPut("平均耗时", 8) + formatOutPut("响应次数", 9));
         for (ServiceEntity u : list) {
-            System.out.println(formatOutPut(u.getSeiveName(), 35) + formatOutPut(u.getMethodName(), 40) + formatOutPut(u.getMaxTime() + "", 12) + formatOutPut(u.getMinTime() + "", 12) + formatOutPut(u.getAverageTime() + "", 12) + formatOutPut(u.getInvokeTimes() + "", 12));
+            System.out.println(formatOutPut(u.getSeiveName(), 80) + formatOutPut(u.getMethodName(), 40) + formatOutPut(u.getMaxTime() + "", 12) + formatOutPut(u.getMinTime() + "", 12) + formatOutPut(u.getAverageTime() + "", 12) + formatOutPut(u.getInvokeTimes() + "", 12));
         }
     }
 
