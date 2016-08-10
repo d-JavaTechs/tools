@@ -2,5 +2,16 @@
 <project version="4">
   <component name="Encoding">
     <file url="file://$PROJECT_DIR$" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/resources/logs/soa.log" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/src/main/resources/scripts/batchAggregation.sh" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/src/main/resources/scripts/batchLog.sh" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/src/main/resources/scripts/ksAggregation.sh" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/src/main/resources/scripts/kslogAnalyzer.sh" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/src/main/resources/scripts/kuaisu.sh" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/src/main/resources/scripts/kuaisuAggregation.sh" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/src/main/resources/scripts/kuaisuadmin.sh" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/src/main/resources/scripts/kuaisuadminAggregation.sh" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/src/main/resources/scripts/soa.sh" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/src/main/resources/scripts/soaAggregation.sh" charset="GBK" />
   </component>
 </project>

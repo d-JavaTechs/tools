@@ -23,6 +23,13 @@
       <artifactId>mysql-connector-java</artifactId>
       <version>5.1.34</version>
     </dependency>
+
+
+    <dependency>
+      <groupId>javax.mail</groupId>
+      <artifactId>mail</artifactId>
+      <version>1.4.7</version>
+    </dependency>
   </dependencies>
 
   <build>
@@ -48,7 +55,7 @@
             <manifest>
               <addClasspath>true</addClasspath>
               <classpathPrefix></classpathPrefix>
-              <mainClass>pn.eric.web.log.SoaLogAnalyser</mainClass>
+                <mainClass>pn.eric.scheduler.LoggerTimer</mainClass>
             </manifest>
           </archive>
         </configuration>
