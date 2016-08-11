@@ -155,6 +155,14 @@ public class KsLogAnalyser {
                     serviceName = lineArray[6].substring(10);
                     methodName = lineArray[7].substring(0, lineArray[7].length() - 1);
                     consumedTTime = lineArray[8].substring(1);
+                }else if(lineArray.length == 9){
+                    serviceName = lineArray[6].substring(10);
+                    methodName = lineArray[7].substring(0, lineArray[7].length() - 1);
+                    consumedTTime = lineArray[8];
+                }else if(lineArray.length == 16){
+                    serviceName = lineArray[6].substring(10);
+                    methodName = lineArray[7].substring(0, lineArray[7].length() - 1);
+                    consumedTTime = lineArray[15];
                 }else{
                     illgalLine.add(line);
                     continue;
@@ -163,8 +171,15 @@ public class KsLogAnalyser {
                 try {
                     consumedTime = extractime(consumedTTime);
                 } catch (Exception e) {
-                    System.out.println("error line but continue : " + line);
-                    continue;
+                    if (lineArray.length == 18) {
+                        serviceName = lineArray[6].substring(10);
+                        methodName = lineArray[7].substring(0, lineArray[7].length() - 1);
+                        consumedTTime = lineArray[16].substring(1);
+                        consumedTime = extractime(consumedTTime);
+                    }else{
+                        System.out.println("error line but continue : " + line);
+                        continue;
+                    }
                 }
 
                 key = serviceName + "-" + methodName;

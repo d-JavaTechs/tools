@@ -23,6 +23,7 @@ import javax.mail.internet.*;
  */
 public class Sendmail {
     /**
+     * @param args
      * @throws Exception
      */
     public static void send() throws Exception {
@@ -78,7 +79,7 @@ public class Sendmail {
 
         Calendar cal  =  Calendar.getInstance();
         cal.add(Calendar.DATE, -1);
-        String yesterday = new SimpleDateFormat( "yyyy-MM-dd ").format(cal.getTime());
+        String yesterday = new SimpleDateFormat( "yyyy-MM-dd").format(cal.getTime());
         System.out.println(yesterday);
 
         //邮件标题
@@ -93,43 +94,43 @@ public class Sendmail {
         //创建邮件附件
 
         MimeBodyPart attachKsMaster = new MimeBodyPart();
-        DataHandler dhKsMaster = new DataHandler(new FileDataSource(String.format("/home/weihu/production-logs/log-tools/standlone/ksservice.master.%s.log",yesterday)));
+        DataHandler dhKsMaster = new DataHandler(new FileDataSource(String.format("C:/Users/Shadow/Desktop/日志/standlone/ksservice.master.%s.log",yesterday)));
         attachKsMaster.setDataHandler(dhKsMaster);
         attachKsMaster.setFileName(dhKsMaster.getName());
 
         MimeBodyPart attachKsSlave = new MimeBodyPart();
-        DataHandler dhKsSlave = new DataHandler(new FileDataSource(String.format("/home/weihu/production-logs/log-tools/standlone/ksservice.slave.%s.log",yesterday)));
+        DataHandler dhKsSlave = new DataHandler(new FileDataSource(String.format("C:/Users/Shadow/Desktop/日志/standlone/ksservice.slave.%s.log",yesterday)));
         attachKsSlave.setDataHandler(dhKsSlave);
         attachKsSlave.setFileName(dhKsSlave.getName());
 
         MimeBodyPart attachKuaisuMaster = new MimeBodyPart();
-        DataHandler dhKuaisuMaster = new DataHandler(new FileDataSource(String.format("/home/weihu/production-logs/log-tools/standlone/kuaisu.master.%s.log",yesterday)));
+        DataHandler dhKuaisuMaster = new DataHandler(new FileDataSource(String.format("C:/Users/Shadow/Desktop/日志/standlone/kuaisu.master.%s.log",yesterday)));
         attachKuaisuMaster.setDataHandler(dhKuaisuMaster);
         attachKuaisuMaster.setFileName(dhKuaisuMaster.getName());
 
         MimeBodyPart attachKuaisuSlave= new MimeBodyPart();
-        DataHandler dhKuaisuSlave = new DataHandler(new FileDataSource(String.format("/home/weihu/production-logs/log-tools/standlone/kuaisu.slave.%s.log",yesterday)));
+        DataHandler dhKuaisuSlave = new DataHandler(new FileDataSource(String.format("C:/Users/Shadow/Desktop/日志/standlone/kuaisu.slave.%s.log",yesterday)));
         attachKuaisuSlave.setDataHandler(dhKuaisuSlave);
         attachKuaisuSlave.setFileName(dhKuaisuSlave.getName());
 
 
         MimeBodyPart attachKuaisuAdminMaster = new MimeBodyPart();
-        DataHandler dhKuaisuAdminMaster = new DataHandler(new FileDataSource(String.format("/home/weihu/production-logs/log-tools/standlone/kuaisuadmin.master.%s.log",yesterday)));
+        DataHandler dhKuaisuAdminMaster = new DataHandler(new FileDataSource(String.format("C:/Users/Shadow/Desktop/日志/standlone/kuaisuadmin.master.%s.log",yesterday)));
         attachKuaisuAdminMaster.setDataHandler(dhKuaisuAdminMaster);
         attachKuaisuAdminMaster.setFileName(dhKuaisuAdminMaster.getName());
 
         MimeBodyPart attachKuaisuAdminSlave = new MimeBodyPart();
-        DataHandler dhKuaisuAdminSlave = new DataHandler(new FileDataSource(String.format("/home/weihu/production-logs/log-tools/standlone/kuaisuadmin.slave.%s.log",yesterday)));
+        DataHandler dhKuaisuAdminSlave = new DataHandler(new FileDataSource(String.format("C:/Users/Shadow/Desktop/日志/standlone/kuaisuadmin.slave.%s.log",yesterday)));
         attachKuaisuAdminSlave.setDataHandler(dhKuaisuAdminSlave);
         attachKuaisuAdminSlave.setFileName(dhKuaisuAdminSlave.getName());
 
         MimeBodyPart attachSoaMaster = new MimeBodyPart();
-        DataHandler dhSoaMaster = new DataHandler(new FileDataSource(String.format("/home/weihu/production-logs/log-tools/standlone/soa.master.%s.log",yesterday)));
+        DataHandler dhSoaMaster = new DataHandler(new FileDataSource(String.format("C:/Users/Shadow/Desktop/日志/standlone/soa.master.%s.log",yesterday)));
         attachSoaMaster.setDataHandler(dhSoaMaster);
         attachSoaMaster.setFileName(dhSoaMaster.getName());
 
         MimeBodyPart attachSoaSlave = new MimeBodyPart();
-        DataHandler dhSoaSlave = new DataHandler(new FileDataSource(String.format("/home/weihu/production-logs/log-tools/standlone/soa.slave.%s.log",yesterday)));
+        DataHandler dhSoaSlave = new DataHandler(new FileDataSource(String.format("C:/Users/Shadow/Desktop/日志/standlone/soa.slave.%s.log",yesterday)));
         attachSoaSlave.setDataHandler(dhSoaSlave);
         attachSoaSlave.setFileName(dhSoaSlave.getName());
 
@@ -137,23 +138,23 @@ public class Sendmail {
 
 
         MimeBodyPart attachKsAggregation = new MimeBodyPart();
-        DataHandler dhKsAggregation = new DataHandler(new FileDataSource(String.format("/home/weihu/production-logs/log-tools/aggregation/ks.aggregation.%s.log",yesterday)));
+        DataHandler dhKsAggregation = new DataHandler(new FileDataSource(String.format("C:/Users/Shadow/Desktop/日志/aggregation/ks.aggregation.%s.log",yesterday)));
         attachKsAggregation.setDataHandler(dhKsAggregation);
         attachKsAggregation.setFileName(dhKsAggregation.getName());
 
 
         MimeBodyPart attachKuaisuAdminAggregation = new MimeBodyPart();
-        DataHandler dhKuaisuAdminAggregation = new DataHandler(new FileDataSource(String.format("/home/weihu/production-logs/log-tools/aggregation/kuaisu.aggregation.%s.log",yesterday)));
+        DataHandler dhKuaisuAdminAggregation = new DataHandler(new FileDataSource(String.format("C:/Users/Shadow/Desktop/日志/aggregation/kuaisu.aggregation.%s.log",yesterday)));
         attachKuaisuAdminAggregation.setDataHandler(dhKuaisuAdminAggregation);
         attachKuaisuAdminAggregation.setFileName(dhKuaisuAdminAggregation.getName());
 
         MimeBodyPart attachKuaisuAggregation = new MimeBodyPart();
-        DataHandler dhKuaisuAggregation = new DataHandler(new FileDataSource(String.format("/home/weihu/production-logs/log-tools/aggregation/kuaisuadmin.aggregation.%s.log",yesterday)));
+        DataHandler dhKuaisuAggregation = new DataHandler(new FileDataSource(String.format("C:/Users/Shadow/Desktop/日志/aggregation/kuaisuadmin.aggregation.%s.log",yesterday)));
         attachKuaisuAggregation.setDataHandler(dhKuaisuAggregation);
         attachKuaisuAggregation.setFileName(dhKuaisuAggregation.getName());
 
         MimeBodyPart attachSoaAggregation = new MimeBodyPart();
-        DataHandler dhSoaAggregation = new DataHandler(new FileDataSource(String.format("/home/weihu/production-logs/log-tools/aggregation/soa.aggregation.%s.log",yesterday)));
+        DataHandler dhSoaAggregation = new DataHandler(new FileDataSource(String.format("C:/Users/Shadow/Desktop/日志/aggregation/soa.aggregation.%s.log",yesterday)));
         attachSoaAggregation.setDataHandler(dhSoaAggregation);
         attachSoaAggregation.setFileName(dhSoaAggregation.getName());
 
@@ -184,8 +185,13 @@ public class Sendmail {
         message.setContent(mp);
         message.saveChanges();
         //将创建的Email写入到E盘存储
-        message.writeTo(new FileOutputStream("/home/weihu/production-logs/log-tools/temp/attachMail.eml"));
+        message.writeTo(new FileOutputStream("C:/Users/Shadow/Desktop/日志/temp/attachMail.eml"));
         //返回生成的邮件
         return message;
+    }
+
+
+    public static void main(String[] args) throws Exception{
+        send();
     }
 }

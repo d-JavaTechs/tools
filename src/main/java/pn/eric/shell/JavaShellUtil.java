@@ -31,8 +31,7 @@ public class JavaShellUtil {
         StringBuffer stringBuffer = new StringBuffer();
         BufferedReader bufferedReader = null;
         // 格式化日期时间，记录日志时使用
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:SS ");
-
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:SS");
         try {
             stringBuffer.append(dateFormat.format(new Date()))
                     .append("准备执行Shell命令 ").append(shellCommand)
