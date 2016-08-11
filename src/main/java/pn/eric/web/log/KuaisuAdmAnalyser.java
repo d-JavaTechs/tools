@@ -9,9 +9,8 @@ import java.nio.file.Paths;
 import java.util.*;
 
 /**
- * Hello world!
  */
-public class KuaisuAdmAnalyser {
+public class KuaisuAdmAnalyser  extends AbstractAnalyser {
 
     public static void main(String[] args) {
         if (args == null) {
@@ -52,37 +51,8 @@ public class KuaisuAdmAnalyser {
                             System.out.println("error line but continue : " + line);
                             continue;
                         }
-                       if (map.containsKey(key)) {
-
-                           List value = map.get(key);
-                           long currentMaxTime = (Long) value.get(0);
-                           if (currentMaxTime < consumedTime) {
-                               value.set(0, consumedTime);
-                           }
-
-                           long currentMinTime = (Long) value.get(1);
-                           if (currentMinTime > consumedTime) {
-                               value.set(1, consumedTime);
-                           }
-
-                           //调用次数
-                           int currentInvokeTimes = (Integer) value.get(2);
-                           value.set(2, ++currentInvokeTimes);
-
-                           //累计耗时
-                           value.set(3, (Long) value.get(3) + consumedTime);
-
-                           map.put(key, value);
-                       } else {
-                           List datas = new ArrayList();
-                           datas.add(0, consumedTime);//最大耗时
-                           datas.add(1, consumedTime);//最小耗时
-                           datas.add(2, 1);//调用次数
-                           datas.add(3, consumedTime);//累计耗时
-
-                           map.put(key, datas);
-                       }
-                        totoalLine++;
+                       compute(map, consumedTime, key);
+                       totoalLine++;
                 } else {
                     illgalLine.add(line);
                 }
@@ -114,7 +84,6 @@ public class KuaisuAdmAnalyser {
             urlEntity.setInvokeTimes((Integer) datas.get(2));
             urlEntity.setAverageTime((Long) datas.get(3) / (Integer) datas.get(2));
             list.add(urlEntity);
-//            System.out.println(entry.getKey() + " " + entry.getValue());
         }
 
         Collections.sort(list, new Comparator<URLEntity>() {
