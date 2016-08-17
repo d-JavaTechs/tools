@@ -1,0 +1,2 @@
+# 备份日志
+*/5 * * * * flock -xn /root/script/logs-backup-rsync.lock -c 'sh /root/script/logs-backup-rsync.sh > /root/script/logs-backup-rsync.log 2>&1'
