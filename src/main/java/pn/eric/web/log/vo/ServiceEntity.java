@@ -4,7 +4,7 @@ package pn.eric.web.log.vo;
  * @author Shadow
  * @date
  */
-public class ServiceEntity {
+public class ServiceEntity{
     public String seiveName;
     public String methodName;
     public long maxTime;

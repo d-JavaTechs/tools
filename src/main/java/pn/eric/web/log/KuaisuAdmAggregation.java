@@ -1,6 +1,7 @@
 package pn.eric.web.log;
 
 
+import pn.eric.excel.ExcelUtil;
 import pn.eric.web.log.vo.URLEntity;
 
 import java.nio.charset.StandardCharsets;
@@ -9,6 +10,7 @@ import java.nio.file.Paths;
 import java.util.*;
 
 /**
+ * @author Eric on 2016-08-10
  */
 public class KuaisuAdmAggregation extends AbstractAnalyser {
 
@@ -97,6 +99,7 @@ public class KuaisuAdmAggregation extends AbstractAnalyser {
         for (URLEntity u : list) {
             System.out.println(formatOutPut(u.getUrl(), 100) + formatOutPut(u.getMaxTime() + "", 15) + formatOutPut(u.getMinTime() + "", 12) + formatOutPut(u.getAverageTime() + "", 12) + formatOutPut(u.getInvokeTimes() + "", 12));
         }
+        createExcel(list, "aggregation");
     }
 
     public static String formatOutPut(String str, int spaceTimes) {
@@ -104,5 +107,11 @@ public class KuaisuAdmAggregation extends AbstractAnalyser {
             str = str + " ";
         }
         return str;
+    }
+
+    public static void createExcel(List<URLEntity> list,String instanceName){
+        String[] titleT = {"URL地址","最大耗时","最小耗时","平均耗时","响应次数"};
+        String[] titleO = {"url","maxTime","minTime","averageTime","invokeTimes"};
+        new ExcelUtil<URLEntity>().generateSingleKsserviceSheetExcel(String.format("/home/weihu/production-logs/log-tools/temp/kuaisuadmin.%s.xls",instanceName),"kuaisuadmin",titleO,titleT,list,URLEntity.class);
     }
 }

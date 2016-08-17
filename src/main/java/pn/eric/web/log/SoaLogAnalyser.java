@@ -2,19 +2,16 @@ package pn.eric.web.log;
 
 
 
+import pn.eric.excel.ExcelUtil;
 import pn.eric.web.log.vo.ServiceEntity;
-import pn.eric.web.log.vo.ServiceErrorEntity;
-import pn.eric.web.log.vo.ServiceRequestEntity;
 
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
- * Hello world!
+ * @author Eric on 2016-08-10
  */
 public class SoaLogAnalyser  extends AbstractAnalyser {
 
@@ -25,11 +22,11 @@ public class SoaLogAnalyser  extends AbstractAnalyser {
         } else {
             System.out.println(formatOutPut("服务响应统计 : ", 80));
             System.out.println(formatOutPut("------------------------------------------------------------------------------------------", 80));
-            invokeAnalysisResponse(args[0]);
+            invokeAnalysisResponse(args[0],args[1]);
         }
     }
 
-    public static void invokeAnalysisResponse(String fileFullName) {
+    public static void invokeAnalysisResponse(String fileFullName,String instanceName) {
         // 最大耗时   最小耗时  响应次数
         Map<String, List> map = new HashMap<String, List>();
         List<String> illgalLine = new ArrayList<String>();
@@ -65,7 +62,7 @@ public class SoaLogAnalyser  extends AbstractAnalyser {
                 totoalLine++;
 
             }
-            printResult(map);
+            printResult(map,instanceName);
         } catch (Exception e) {
             System.out.println("error line : " + line);
             e.printStackTrace();
@@ -79,7 +76,7 @@ public class SoaLogAnalyser  extends AbstractAnalyser {
         return time;
     }
 
-    public static void printResult(Map<String, List> map) {
+    public static void printResult(Map<String, List> map,String instanceName) {
         List<ServiceEntity> list = new ArrayList<ServiceEntity>();
         for (Map.Entry<String, List> entry : map.entrySet()) {
             String key = entry.getKey();
@@ -103,6 +100,7 @@ public class SoaLogAnalyser  extends AbstractAnalyser {
         for (ServiceEntity u : list) {
             System.out.println(formatOutPut(u.getSeiveName(), 80) + formatOutPut(u.getMethodName(), 40) + formatOutPut(u.getMaxTime() + "", 12) + formatOutPut(u.getMinTime() + "", 12) + formatOutPut(u.getAverageTime() + "", 12) + formatOutPut(u.getInvokeTimes() + "", 12));
         }
+        createExcel(list,instanceName);
     }
 
     public static String formatOutPut(String str, int spaceTimes) {
@@ -116,5 +114,11 @@ public class SoaLogAnalyser  extends AbstractAnalyser {
         for (String illgalLine : illgalLines) {
             System.out.println("illgalLines line : " + illgalLine);
         }
+    }
+
+    public static void createExcel(List<ServiceEntity> list,String instanceName){
+        String[] titleT = {"服务名","方法名","最大耗时","最小耗时","平均耗时","响应次数"};
+        String[] titleO = {"seiveName","methodName","maxTime","minTime","averageTime","invokeTimes"};
+        new ExcelUtil<ServiceEntity>().generateSingleKsserviceSheetExcel(String.format("/home/weihu/production-logs/log-tools/temp/soa.%s.xls",instanceName),"soa",titleO,titleT,list,ServiceEntity.class);
     }
 }

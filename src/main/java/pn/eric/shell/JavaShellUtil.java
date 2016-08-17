@@ -7,7 +7,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 /**
- * @author Eric
+ * @author Eric on 2016-08-10
  */
 public class JavaShellUtil {
     // 基本路径
@@ -64,7 +64,7 @@ public class JavaShellUtil {
                     && (line = bufferedReader.readLine()) != null) {
                 stringBuffer.append(line).append("\r\n");
             }
-            System.out.println("stringBuffer:"+stringBuffer);
+//            System.out.println("stringBuffer:"+stringBuffer);
         } catch (Exception ioe) {
             stringBuffer.append("执行Shell命令时发生异常：\r\n").append(ioe.getMessage())
                     .append("\r\n");
@@ -91,8 +91,8 @@ public class JavaShellUtil {
 
     public static void main(String[] args) {
         try {
-            new JavaShellUtil().executeShell(BATCHLOG);
-            new JavaShellUtil().executeShell(BATCHAGGREGATION);
+            executeShell(BATCHLOG);
+            executeShell(BATCHAGGREGATION);
         } catch (IOException e) {
             e.printStackTrace();
         }

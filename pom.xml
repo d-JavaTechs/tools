@@ -61,7 +61,7 @@
             <manifest>
               <addClasspath>true</addClasspath>
               <classpathPrefix></classpathPrefix>
-                <mainClass>com.kuaisu.web.log.IncrementAnalyser</mainClass>
+                <mainClass>pn.eric.web.log.IncrementAnalyser</mainClass>
             </manifest>
           </archive>
         </configuration>

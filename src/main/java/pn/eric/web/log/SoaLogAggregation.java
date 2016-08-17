@@ -2,19 +2,16 @@ package pn.eric.web.log;
 
 
 
+import pn.eric.excel.ExcelUtil;
 import pn.eric.web.log.vo.ServiceEntity;
-import pn.eric.web.log.vo.ServiceErrorEntity;
-import pn.eric.web.log.vo.ServiceRequestEntity;
 
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
- * Hello world!
+ * @author Eric on 2016-08-10
  */
 public class SoaLogAggregation  extends AbstractAnalyser {
 
@@ -107,6 +104,7 @@ public class SoaLogAggregation  extends AbstractAnalyser {
         for (ServiceEntity u : list) {
             System.out.println(formatOutPut(u.getSeiveName(), 80) + formatOutPut(u.getMethodName(), 40) + formatOutPut(u.getMaxTime() + "", 12) + formatOutPut(u.getMinTime() + "", 12) + formatOutPut(u.getAverageTime() + "", 12) + formatOutPut(u.getInvokeTimes() + "", 12));
         }
+        createExcel(list,"aggregation");
     }
 
 
@@ -121,6 +119,12 @@ public class SoaLogAggregation  extends AbstractAnalyser {
         for (String illgalLine : illgalLines) {
             System.out.println("illgalLines line : " + illgalLine);
         }
+    }
+
+    public static void createExcel(List<ServiceEntity> list,String instanceName){
+        String[] titleT = {"服务名","方法名","最大耗时","最小耗时","平均耗时","响应次数"};
+        String[] titleO = {"seiveName","methodName","maxTime","minTime","averageTime","invokeTimes"};
+        new ExcelUtil<ServiceEntity>().generateSingleKsserviceSheetExcel(String.format("/home/weihu/production-logs/log-tools/temp/soa.%s.xls",instanceName),"soa",titleO,titleT,list,ServiceEntity.class);
     }
 
 }

@@ -4,7 +4,7 @@ package pn.eric.web.log.vo;
  * @author Shadow
  * @date
  */
-public class URLEntity {
+public class URLEntity{
     public String url;
     public long maxTime;
     public long minTime;
