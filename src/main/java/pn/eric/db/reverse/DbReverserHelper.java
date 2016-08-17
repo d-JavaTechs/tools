@@ -1,4 +1,4 @@
-package pn.eric.data.reverse;
+package pn.eric.db.reverse;
 
 import javax.swing.filechooser.FileSystemView;
 import java.io.*;
