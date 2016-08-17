@@ -23,11 +23,7 @@
       <artifactId>mysql-connector-java</artifactId>
       <version>5.1.34</version>
     </dependency>
-    <dependency>
-      <groupId>javax.mail</groupId>
-      <artifactId>mail</artifactId>
-      <version>1.4.7</version>
-    </dependency>
+
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-email</artifactId>
@@ -39,16 +35,7 @@
       <artifactId>poi</artifactId>
       <version>3.14</version>
     </dependency>
-    <dependency>
-      <groupId>org.apache.poi</groupId>
-      <artifactId>poi-ooxml</artifactId>
-      <version>3.14</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.poi</groupId>
-      <artifactId>poi-ooxml-schemas</artifactId>
-      <version>3.14</version>
-    </dependency>
+
   </dependencies>
 
   <build>
@@ -74,7 +61,7 @@
             <manifest>
               <addClasspath>true</addClasspath>
               <classpathPrefix></classpathPrefix>
-                <mainClass>pn.eric.scheduler.LoggerTimer</mainClass>
+                <mainClass>com.kuaisu.web.log.IncrementAnalyser</mainClass>
             </manifest>
           </archive>
         </configuration>
