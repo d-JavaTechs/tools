@@ -36,7 +36,7 @@ public class TailLogThread  extends Thread {
                 if(!line.trim().startsWith("at")&&!line.trim().startsWith("###")){
                     if(!error.containsKey(line)){
                         error.put(line,1);
-                        EmailUtil.sendEmail("duwupeng@iplas.com.cn", this.filePath + "出现新异常", "大家好,异常简短信息为" + line, null);
+                        EmailUtil.sendEmail("iplas-jishubu@iplas.com.cn", this.filePath + "出现新异常", "大家好,异常简短信息为" + line, null);
                     }else{
                         error.put(line, error.get(line)+1);
                     }
