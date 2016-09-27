@@ -1,4 +1,4 @@
-package pn.eric.http.netty;
+package pn.eric.io.netty;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;

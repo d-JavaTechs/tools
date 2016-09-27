@@ -1,4 +1,4 @@
-package pn.eric.http.client;
+package pn.eric.io.client;
 
 
 import java.io.IOException;
