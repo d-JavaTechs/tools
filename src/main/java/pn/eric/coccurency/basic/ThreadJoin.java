@@ -10,7 +10,7 @@ public class ThreadJoin {
         Thread t2 = new Thread(new ThreadTesterB());
         t1.start();
         t1.join(); // wait t1 to be finished
-        System.out.print("invode t2");
+        System.out.print("invoke t2");
         t2.start();
         t2.join(); // in this program, this may be removed
     }
