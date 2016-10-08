@@ -60,7 +60,7 @@ public class HttpClientUtil {
 
     public static void main(String[] args) throws UnsupportedEncodingException {
 
-        String url = "https://www.tmall.com";
+        String url = "http://openapi.b.qq.com/api/user/list?company_id=4a6288f27b421b8be5338e86c5dd08c7&company_token=294b854c893ed3707b504cc88d37fa86&open_id=&app_id=200436160&client_ip=120.25.226.26&oauth_version=2&timestamp=0";
 
 
 //        NameValuePair name=new NameValuePair("name", "allen");
