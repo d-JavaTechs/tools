@@ -1,4 +1,4 @@
-package pn.eric.paixu;
+package pn.eric.algorithm.paixu;
 
 /**
  * @author Shadow
