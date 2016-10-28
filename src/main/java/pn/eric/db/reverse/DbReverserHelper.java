@@ -79,7 +79,7 @@ public class DbReverserHelper {
         }
       }
       if(!checkResult){
-        System.out.println("java -jar dapeng.jar reverse:[po|struct|enum|all|enumFmt|conf] [reverse.conf] \n");
+        System.out.println("java -jar dapeng.jar reverse:[po|struct|enum|sql|reactJs|angularJs|vueJs|all|enumFmt|conf] [reverse.conf] \n");
       }
     }
     return checkResult;
@@ -111,6 +111,14 @@ public class DbReverserHelper {
           case STRUCT: genStruct(entry); break;
           case ENUM:
             genEnums(entry); break;
+          case SQL:
+            genSql(entry); break;
+          case RJ:
+            genReact(entry); break;
+          case NG2:
+            genAngular2(entry); break;
+          case VUE2:
+            genVue2(entry); break;
           case ALL:
             genPo(entry);
             genStruct(entry);
@@ -284,6 +292,81 @@ public class DbReverserHelper {
     structBuf.append("}\n");
     Utils.write(structBuf.toString(), ContentType.STRUCT);
   }
+
+  /**
+   * 生成SQL
+   * @param tableMeta
+   */
+  public static void genSql(Map.Entry<String, Map<String, String>> tableMeta){
+    StringBuffer structBuf = new StringBuffer();
+    structBuf.append(String.format("namespace java com.kuaisu.%s.sql\n\n",packageName));
+    structBuf.append(String.format("SQLS_%s{\n", entityName));
+    Iterator<Map.Entry<String, String>> it = tableMeta.getValue().entrySet().iterator();
+    int i = 0;
+    while (it.hasNext()) {
+
+
+    }
+    structBuf.append("}\n");
+    Utils.write(structBuf.toString(), ContentType.STRUCT);
+  }
+
+  /**
+   * 生成React
+   * @param tableMeta
+   */
+  public static void genReact(Map.Entry<String, Map<String, String>> tableMeta){
+    StringBuffer structBuf = new StringBuffer();
+    structBuf.append(String.format("namespace java com.kuaisu.%s.sql\n\n",packageName));
+    structBuf.append(String.format("React_%s{\n", entityName));
+    Iterator<Map.Entry<String, String>> it = tableMeta.getValue().entrySet().iterator();
+    int i = 0;
+    while (it.hasNext()) {
+
+
+    }
+    structBuf.append("}\n");
+    Utils.write(structBuf.toString(), ContentType.STRUCT);
+  }
+
+
+  /**
+   * 生成Angular2
+   * @param tableMeta
+   */
+  public static void genAngular2(Map.Entry<String, Map<String, String>> tableMeta){
+    StringBuffer structBuf = new StringBuffer();
+    structBuf.append(String.format("namespace java com.kuaisu.%s.sql\n\n",packageName));
+    structBuf.append(String.format("React_%s{\n", entityName));
+    Iterator<Map.Entry<String, String>> it = tableMeta.getValue().entrySet().iterator();
+    int i = 0;
+    while (it.hasNext()) {
+
+
+    }
+    structBuf.append("}\n");
+    Utils.write(structBuf.toString(), ContentType.STRUCT);
+  }
+
+  /**
+   * 生成Angular2
+   * @param tableMeta
+   */
+  public static void genVue2(Map.Entry<String, Map<String, String>> tableMeta){
+    StringBuffer structBuf = new StringBuffer();
+    structBuf.append(String.format("namespace java com.kuaisu.%s.sql\n\n",packageName));
+    structBuf.append(String.format("React_%s{\n", entityName));
+    Iterator<Map.Entry<String, String>> it = tableMeta.getValue().entrySet().iterator();
+    int i = 0;
+    while (it.hasNext()) {
+
+
+    }
+    structBuf.append("}\n");
+    Utils.write(structBuf.toString(), ContentType.STRUCT);
+  }
+
+
   /**
    * 生成thrift枚举
    * @param tableMeta
@@ -352,6 +435,10 @@ public class DbReverserHelper {
     STRUCT,
     ENUM,
     PO,
+    SQL,
+    RJ,
+    NG2,
+    VUE2,
     ALL
   }
   /**
