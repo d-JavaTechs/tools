@@ -20,7 +20,7 @@ public class DbReverserHelper {
   private static String packageName;
 
 
-  private static List<String> tablesToReverse = new ArrayList();;
+  private static List<String> tablesToReverse = new ArrayList();
   private static Map<String, Map<String, String>> tablesToReverseMeta = new HashMap();
 
   public static final String arraySeperator = ">";
@@ -79,7 +79,7 @@ public class DbReverserHelper {
         }
       }
       if(!checkResult){
-        System.out.println("java -jar dapeng.jar reverse:[po|struct|enum|sql|reactJs|angularJs|vueJs|all|enumFmt|conf] [reverse.conf] \n");
+        System.out.println("java -jar dapeng.jar reverse:[po|struct|enum|sql|all|enumFmt|conf] [reverse.conf] \n");
       }
     }
     return checkResult;
@@ -113,16 +113,11 @@ public class DbReverserHelper {
             genEnums(entry); break;
           case SQL:
             genSql(entry); break;
-          case RJ:
-            genReact(entry); break;
-          case NG2:
-            genAngular2(entry); break;
-          case VUE2:
-            genVue2(entry); break;
           case ALL:
             genPo(entry);
             genStruct(entry);
             genEnums(entry);
+            genSql(entry);
             break;
           default:
             System.out.println("example: java -jar dapeng.jar reverseConf");
@@ -261,7 +256,7 @@ public class DbReverserHelper {
       if("id".equals(entryTemp.getKey())){
         poBuf.append("  @Id(auto=true)").append("\r\n");
       }
-      poBuf.append("  var " + Utils.underlineToCamel(true,entryTemp.getKey(), false) + " : " + Utils.toScalaType((entryTemp.getValue()).split(arraySeperator)[0]) + " =_")
+      poBuf.append("  var " + Utils.underlineToCamel(true, entryTemp.getKey(), false) + " : " + Utils.toScalaType((entryTemp.getValue()).split(arraySeperator)[0]) + " =_")
               .append("\r\n\r\n");
     }
     poBuf.append("}\n");
@@ -292,81 +287,6 @@ public class DbReverserHelper {
     structBuf.append("}\n");
     Utils.write(structBuf.toString(), ContentType.STRUCT);
   }
-
-  /**
-   * 生成SQL
-   * @param tableMeta
-   */
-  public static void genSql(Map.Entry<String, Map<String, String>> tableMeta){
-    StringBuffer structBuf = new StringBuffer();
-    structBuf.append(String.format("namespace java com.kuaisu.%s.sql\n\n",packageName));
-    structBuf.append(String.format("SQLS_%s{\n", entityName));
-    Iterator<Map.Entry<String, String>> it = tableMeta.getValue().entrySet().iterator();
-    int i = 0;
-    while (it.hasNext()) {
-
-
-    }
-    structBuf.append("}\n");
-    Utils.write(structBuf.toString(), ContentType.STRUCT);
-  }
-
-  /**
-   * 生成React
-   * @param tableMeta
-   */
-  public static void genReact(Map.Entry<String, Map<String, String>> tableMeta){
-    StringBuffer structBuf = new StringBuffer();
-    structBuf.append(String.format("namespace java com.kuaisu.%s.sql\n\n",packageName));
-    structBuf.append(String.format("React_%s{\n", entityName));
-    Iterator<Map.Entry<String, String>> it = tableMeta.getValue().entrySet().iterator();
-    int i = 0;
-    while (it.hasNext()) {
-
-
-    }
-    structBuf.append("}\n");
-    Utils.write(structBuf.toString(), ContentType.STRUCT);
-  }
-
-
-  /**
-   * 生成Angular2
-   * @param tableMeta
-   */
-  public static void genAngular2(Map.Entry<String, Map<String, String>> tableMeta){
-    StringBuffer structBuf = new StringBuffer();
-    structBuf.append(String.format("namespace java com.kuaisu.%s.sql\n\n",packageName));
-    structBuf.append(String.format("React_%s{\n", entityName));
-    Iterator<Map.Entry<String, String>> it = tableMeta.getValue().entrySet().iterator();
-    int i = 0;
-    while (it.hasNext()) {
-
-
-    }
-    structBuf.append("}\n");
-    Utils.write(structBuf.toString(), ContentType.STRUCT);
-  }
-
-  /**
-   * 生成Angular2
-   * @param tableMeta
-   */
-  public static void genVue2(Map.Entry<String, Map<String, String>> tableMeta){
-    StringBuffer structBuf = new StringBuffer();
-    structBuf.append(String.format("namespace java com.kuaisu.%s.sql\n\n",packageName));
-    structBuf.append(String.format("React_%s{\n", entityName));
-    Iterator<Map.Entry<String, String>> it = tableMeta.getValue().entrySet().iterator();
-    int i = 0;
-    while (it.hasNext()) {
-
-
-    }
-    structBuf.append("}\n");
-    Utils.write(structBuf.toString(), ContentType.STRUCT);
-  }
-
-
   /**
    * 生成thrift枚举
    * @param tableMeta
@@ -423,11 +343,68 @@ public class DbReverserHelper {
       }
     }
     if(hasEnum){
-      Utils.write(enumBuf.toString(),ContentType.ENUM);
+      Utils.write(enumBuf.toString(), ContentType.ENUM);
     }
   }
 
+  /**
+   * 生成thrift结构体
+   * @param tableMeta
+   */
+  public static void genSql(Map.Entry<String, Map<String, String>> tableMeta){
+    StringBuffer structBuf = new StringBuffer();
+    structBuf.append(String.format("//%s\n",packageName));
 
+    Iterator<Map.Entry<String, String>> it = tableMeta.getValue().entrySet().iterator();
+    structBuf.append("//insert sql\n");
+    structBuf.append(String.format(" insert into %s set\n", tableMeta.getKey()));
+    while (it.hasNext()) {
+      Map.Entry<String, String> entryTemp = (Map.Entry) it.next();
+      String fieldName = entryTemp.getKey();
+      structBuf.append(String.format("      %s='' ,\n", fieldName));
+    }
+    structBuf.replace(structBuf.length() - 2, structBuf.length() - 1, ";");
+
+    structBuf.append("//delete sql\n");
+    it = tableMeta.getValue().entrySet().iterator();
+    structBuf.append(String.format(" delete from %s where\n", tableMeta.getKey()));
+    while (it.hasNext()) {
+      Map.Entry<String, String> entryTemp = (Map.Entry) it.next();
+      String fieldName = entryTemp.getKey();
+      structBuf.append(String.format("      %s='' and\n", fieldName));
+    }
+    structBuf.replace(structBuf.length() - 5, structBuf.length() - 1, ";");
+
+    structBuf.append("//update sql\n");
+    structBuf.append(String.format("  update %s set\n", tableMeta.getKey()));
+    it = tableMeta.getValue().entrySet().iterator();
+    while (it.hasNext()) {
+      Map.Entry<String, String> entryTemp = (Map.Entry) it.next();
+      String fieldName = entryTemp.getKey();
+      structBuf.append(String.format("      %s='' and\n", fieldName));
+    }
+    structBuf.replace(structBuf.length() - 5, structBuf.length() - 1, ";");
+
+    structBuf.append("//select sql\n");
+    it = tableMeta.getValue().entrySet().iterator();
+    structBuf.append(" select\n");
+    while (it.hasNext()) {
+      Map.Entry<String, String> entryTemp = (Map.Entry) it.next();
+      String fieldName = entryTemp.getKey();
+      structBuf.append(String.format("      %s,\n", fieldName));
+    }
+    structBuf.delete(structBuf.length() - 2, structBuf.length() - 1);
+    structBuf.append(String.format(" from %s where\n", tableMeta.getKey()));
+    it = tableMeta.getValue().entrySet().iterator();
+    while (it.hasNext()) {
+      Map.Entry<String, String> entryTemp = (Map.Entry) it.next();
+      String fieldName = entryTemp.getKey();
+      structBuf.append(String.format("      %s='' and\n", fieldName));
+    }
+    structBuf.replace(structBuf.length() - 5, structBuf.length() - 1, ";");
+
+    Utils.write(structBuf.toString(), ContentType.SQL);
+  }
 
 
   public static enum ContentType{
@@ -436,9 +413,6 @@ public class DbReverserHelper {
     ENUM,
     PO,
     SQL,
-    RJ,
-    NG2,
-    VUE2,
     ALL
   }
   /**
@@ -628,6 +602,9 @@ public class DbReverserHelper {
           break;
         case ENUM: fileAbsolutePath = desktopDir+File.separator+ "enum/";
           fileExtension = "Enums.thrift";
+          break;
+        case SQL: fileAbsolutePath = desktopDir+File.separator+ "sql/";
+          fileExtension = "Enums.sql";
           break;
         case CONF: fileAbsolutePath = desktopDir+File.separator+ "dapeng-reverse-conf/";
           entityName = "reverse";
