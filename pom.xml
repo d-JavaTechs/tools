@@ -167,7 +167,7 @@
        <dependency>
          <groupId>QRCode</groupId>
          <artifactId>QRCode</artifactId>
-         <version>3.0</version>
+         <version>3dd.0</version>
          <scope>system</scope>
          <systemPath>/Users/eric/git_projects/tools/src/main/libs/QRCode.jar</systemPath>
        </dependency>
