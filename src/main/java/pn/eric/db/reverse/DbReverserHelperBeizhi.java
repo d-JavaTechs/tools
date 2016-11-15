@@ -108,14 +108,14 @@ public class DbReverserHelperBeizhi {
         initCurrentEntityNames(entry.getKey());
         switch (ContentType.valueOf(command)) {
           case PO: genPo(entry); break;
-          case STRUCT: genStruct(entry); break;
+//          case STRUCT: genStruct(entry); break;
           case ENUM:
             genEnums(entry); break;
           case SQL:
             genSql(entry); break;
           case ALL:
             genPo(entry);
-            genStruct(entry);
+//            genStruct(entry);
             genEnums(entry);
             genSql(entry);
             break;
@@ -240,10 +240,9 @@ public class DbReverserHelperBeizhi {
    */
   public static void genPo(Map.Entry<String, Map<String, String>> tableMeta){
     StringBuffer poBuf = new StringBuffer();
-    poBuf.append(String.format("package com.beizhi.cloud.%s.entity\n",packageName));
-    poBuf.append("import wangzx.scala_commons.sql._\n");
+    poBuf.append(String.format("package com.beizhi.cloud.%s.entity;\n",packageName.trim()));
     poBuf.append("  /**\n" +
-            "  * @author dapeng-tool\n" +
+            "  * @author auto-tool\n" +
             "  */");
     poBuf.append(String.format("public class %s {\n", entityName));
     Iterator<Map.Entry<String, String>> it = tableMeta.getValue().entrySet().iterator();
@@ -253,7 +252,7 @@ public class DbReverserHelperBeizhi {
               "   * " + (String) entryTemp.getValue().split(arraySeperator)[2] + "\n" +
               "   */\n");
 
-      poBuf.append(Utils.toJavaType((entryTemp.getValue()).split(arraySeperator)[0]) + " "+Utils.underlineToCamel(true, entryTemp.getKey(), false)+";" )
+      poBuf.append("   "+Utils.toJavaType((entryTemp.getValue()).split(arraySeperator)[0]) + " "+Utils.underlineToCamel(true, entryTemp.getKey(), false)+";" )
               .append("\r\n\r\n");
     }
     poBuf.append("}\n");
@@ -266,7 +265,7 @@ public class DbReverserHelperBeizhi {
    */
   public static void genStruct(Map.Entry<String, Map<String, String>> tableMeta){
     StringBuffer structBuf = new StringBuffer();
-    structBuf.append(String.format("namespace java com.kuaisu.%s.dto\n\n",packageName));
+    structBuf.append(String.format("namespace java com.kuaisu.%s.dto\n\n",packageName.trim()));
     structBuf.append(String.format("struct T%s{\n", entityName));
     Iterator<Map.Entry<String, String>> it = tableMeta.getValue().entrySet().iterator();
     int i = 0;
@@ -301,13 +300,16 @@ public class DbReverserHelperBeizhi {
       Map.Entry<String, String> entryTemp = (Map.Entry) it.next();
       if ((entryTemp.getValue().startsWith("SMALLINT"))) {
         hasEnum=true;
-        if(i==1){
-          enumBuf.append(String.format("namespace java com.kuaisu.%s.enums\n\n", packageName));
+        if(hasEnum){
+          enumBuf.append(String.format("package com.beizhi.cloud.%s.enums;\n", packageName.trim()));
+          enumBuf.append(String.format("public %sEnums{\n",entityName));
+          enumBuf.append("}\n");
+
         }
         String currentEnumesToGen = entryTemp.getValue();
         try {
           enumeComment = currentEnumesToGen.split(",")[0].split(">")[2];
-          enumeName = instanceName + Utils.underlineToCamel(false, entryTemp.getKey(), true);
+          enumeName = entityName + Utils.underlineToCamel(false, entryTemp.getKey(), true);
           enumeItems = currentEnumesToGen.split(",")[1].split(";");
 
           enumBuf.append("/**").append("\r\n")
@@ -325,12 +327,12 @@ public class DbReverserHelperBeizhi {
             enumBuf.append("\r\n").append("   /**").append("\r\n")
                     .append("   *").append(itemComment).append("\r\n")
                     .append("   **/").append("\r\n")
-                    .append("   " + Utils.underlineToCamel(itemName).toUpperCase() + "=" + itemValue);
+                    .append("   " + Utils.underlineToCamel(itemName).toUpperCase() + "(" + itemValue+")");
             if (j < enumeItems.length - 1) {
               enumBuf.append(",").append("\r\n");
             }
             if (j == enumeItems.length - 1) {
-              enumBuf.append("\r\n}").append("\r\n");
+              enumBuf.append(";\r\n}").append("\r\n");
             }
           }
         } catch (Exception e) {
@@ -641,19 +643,19 @@ public class DbReverserHelperBeizhi {
       String fileExtension ="";
       switch (contentType){
         case PO:
-          fileAbsolutePath = desktopDir+File.separator+ "PO/";
-          fileExtension = ".scala";
+          fileAbsolutePath = desktopDir+File.separator+ "reverse-result/PO/";
+          fileExtension = ".java";
           break;
-        case STRUCT: fileAbsolutePath = desktopDir+File.separator+ "dto/";
+        case STRUCT: fileAbsolutePath = desktopDir+File.separator+ "reverse-result/dto/";
           fileExtension = "Domain.thrift";
           break;
-        case ENUM: fileAbsolutePath = desktopDir+File.separator+ "enum/";
-          fileExtension = "Enums.thrift";
+        case ENUM: fileAbsolutePath = desktopDir+File.separator+ "reverse-result/enum/";
+          fileExtension = "Enums.java";
           break;
-        case SQL: fileAbsolutePath = desktopDir+File.separator+ "sql/";
-          fileExtension = "Enums.sql";
+        case SQL: fileAbsolutePath = desktopDir+File.separator+ "reverse-result/sql/";
+          fileExtension = ".sql";
           break;
-        case CONF: fileAbsolutePath = desktopDir+File.separator+ "dapeng-reverse-conf/";
+        case CONF: fileAbsolutePath = desktopDir+File.separator+ "reverse-conf/";
           entityName = "reverse";
           fileExtension = ".conf";
           break;
