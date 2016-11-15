@@ -11,21 +11,21 @@
   <url>http://maven.apache.org</url>
 
 
-  <repositories>
-    <repository>
-      <id>akka-snapshots</id>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-      <url>http://repo.akka.io/snapshots/</url>
-    </repository>
+  <!--<repositories>-->
+    <!--<repository>-->
+      <!--<id>akka-snapshots</id>-->
+      <!--<snapshots>-->
+        <!--<enabled>true</enabled>-->
+      <!--</snapshots>-->
+      <!--<url>http://repo.akka.io/snapshots/</url>-->
+    <!--</repository>-->
 
-      <repository>
-        <id>jitpack.io</id>
-        <url>https://jitpack.io</url>
-      </repository>
+      <!--<repository>-->
+        <!--<id>jitpack.io</id>-->
+        <!--<url>https://jitpack.io</url>-->
+      <!--</repository>-->
 
-  </repositories>
+  <!--</repositories>-->
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -100,6 +100,11 @@
       <version>4.5.2</version>
     </dependency>
 
+    <dependency>
+      <groupId>org.mybatis.spring.boot</groupId>
+      <artifactId>mybatis-spring-boot-starter</artifactId>
+      <version>1.1.1</version>
+    </dependency>
 
 
 
@@ -157,20 +162,20 @@
       <version>2.4-SNAPSHOT</version>
     </dependency>
 
-
+    <dependency>
+      <groupId>QRCode</groupId>
+      <artifactId>QRCode</artifactId>
+      <version>3dd.0</version>
+      <scope>system</scope>
+      <systemPath>/Users/eric/git_projects/tools/src/main/libs/QRCode.jar</systemPath>
+    </dependency>
       <!--QRCode-->
       <!--<dependency>-->
         <!--<groupId>com.github.kenglxn.qrgen</groupId>-->
         <!--<artifactId>javase</artifactId>-->
         <!--<version>2.2.0</version>-->
       <!--</dependency>-->
-       <dependency>
-         <groupId>QRCode</groupId>
-         <artifactId>QRCode</artifactId>
-         <version>3dd.0</version>
-         <scope>system</scope>
-         <systemPath>/Users/eric/git_projects/tools/src/main/libs/QRCode.jar</systemPath>
-       </dependency>
+
 
   </dependencies>
 

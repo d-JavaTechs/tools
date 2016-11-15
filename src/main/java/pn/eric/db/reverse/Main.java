@@ -6,7 +6,7 @@ package pn.eric.db.reverse;
 public class Main {
     private static String help = "-----------------------------------------------------------------------\n" +
             " |    指定数据库以及表,生成相应的scala对象，thrift文件: \n" +
-            " |    java -jar dapeng.jar reverse:[po|struct|enum|enumFmt|sql|all|conf] [reverse.conf] \n" +
+            " |    java -jar dapeng.jar reverse:[po|enum|enumFmt|sql|all|conf] [reverse.conf] \n" +
             "-----------------------------------------------------------------------";
     public static void main(String[] args) {
 
@@ -16,7 +16,7 @@ public class Main {
         }
 
         if(args[0].startsWith("reverse:")){
-            DbReverserHelper.gen(args);
+            DbReverserHelperBeizhi.gen(args);
             System.exit(0);
         }else{
             System.out.println(help);

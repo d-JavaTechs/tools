@@ -191,15 +191,16 @@ public class Util {
     }
 
     public static void main(String[] args) {
-        if(args==null){
-            System.out.println("加密内容不能为空: ");
-        }
 
-        if(!args[0].equals("decode")||!args[0].equals("encode")){
-            System.out.println("java -jar QR_CodeUtil.jar decode 文本加密");
-            System.out.println("java -jar QR_CodeUtil.jar encode 文本解密");
-            System.exit(-1);
-        }
+//        if(args==null){
+//            System.out.println("加密内容不能为空: ");
+//        }
+//
+//        if(!args[0].equals("decode")||!args[0].equals("encode")){
+//            System.out.println("java -jar QR_CodeUtil.jar decode 文本加密");
+//            System.out.println("java -jar QR_CodeUtil.jar encode 文本解密");
+//            System.exit(-1);
+//        }
         String desktopDir = FileSystemView.getFileSystemView().getHomeDirectory().getAbsolutePath();
 
         String imgPath = desktopDir+"/QR_Code.JPG";
@@ -208,14 +209,15 @@ public class Util {
 
         String encoderContent = args[0];
         Util handler = new Util();
-        if(args[0].equals("decode")){
+//        if(args[0].equals("decode")){
             handler.encoderQRCode(encoderContent, imgPath, "png");
             System.out.println("========二维码生成成功");
-        }else if(args[0].equals("encode")){
-            String decoderContent = handler.decoderQRCode(imgPath);
-            System.out.println("解析结果如下：");
-            System.out.println(decoderContent);
-            System.out.println("========二维码解析成功!!!");
-        }
+
+//        }else if(args[0].equals("encode")){
+//            String decoderContent = handler.decoderQRCode(imgPath);
+//            System.out.println("解析结果如下：");
+//            System.out.println(decoderContent);
+//            System.out.println("========二维码解析成功!!!");
+//        }
     }
 }
