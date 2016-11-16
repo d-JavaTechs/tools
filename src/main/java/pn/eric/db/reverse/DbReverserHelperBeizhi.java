@@ -338,8 +338,19 @@ public class DbReverserHelperBeizhi {
           System.err.println(String.format("instanceName-> %s enumeName:%s: enumeComment:%s 不符合规范 skipped",instanceName,enumeName,enumeComment));
           continue;
         }
-      }
-      if(hasEnum){
+        enumBuf.append("   private final int value;");
+        enumBuf.append("   private "+enumeName+"(int value) {");
+        enumBuf.append("     this.value = value;");
+        enumBuf.append("   }\n");
+        enumBuf.append("   public int getValue() {");
+        enumBuf.append("      return value;");
+        enumBuf.append("   }");
+        /**
+         * Get the integer value of this enum value, as defined in the Thrift IDL.
+         */
+
+
+
         Utils.write(enumBuf.toString(), ContentType.ENUMSINGLE,Utils.underlineToCamel(false, entryTemp.getKey(), true));
       }
     }
@@ -653,7 +664,7 @@ public class DbReverserHelperBeizhi {
           fileExtension = "Enums.java";
           break;
         case ENUMSINGLE: fileAbsolutePath = desktopDir+File.separator+ "reverse-result/enum/";
-          fileExtension = fileName;
+          fileExtension = fileName+".java";
           break;
         case SQL: fileAbsolutePath = desktopDir+File.separator+ "reverse-result/sql/";
           fileExtension = ".sql";
