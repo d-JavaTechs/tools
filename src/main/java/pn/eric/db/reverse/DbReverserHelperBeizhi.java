@@ -331,7 +331,7 @@ public class DbReverserHelperBeizhi {
               enumBuf.append(",").append("\r\n");
             }
             if (j == enumeItems.length - 1) {
-
+              enumBuf.append(";\r\n}").append("\r\n");
               enumBuf.append("   private final int value;\n");
               enumBuf.append("   private "+enumeName+"(int value) {\n");
               enumBuf.append("     this.value = value;\n");
@@ -339,8 +339,6 @@ public class DbReverserHelperBeizhi {
               enumBuf.append("   public int getValue() {\n");
               enumBuf.append("      return value;\n");
               enumBuf.append("   }\n");
-
-              enumBuf.append(";\r\n}").append("\r\n");
             }
           }
         } catch (Exception e) {
