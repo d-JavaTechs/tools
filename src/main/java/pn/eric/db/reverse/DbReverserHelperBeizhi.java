@@ -331,6 +331,15 @@ public class DbReverserHelperBeizhi {
               enumBuf.append(",").append("\r\n");
             }
             if (j == enumeItems.length - 1) {
+
+              enumBuf.append("   private final int value;\n");
+              enumBuf.append("   private "+enumeName+"(int value) {\n");
+              enumBuf.append("     this.value = value;\n");
+              enumBuf.append("   }\n");
+              enumBuf.append("   public int getValue() {\n");
+              enumBuf.append("      return value;\n");
+              enumBuf.append("   }\n");
+
               enumBuf.append(";\r\n}").append("\r\n");
             }
           }
@@ -338,19 +347,10 @@ public class DbReverserHelperBeizhi {
           System.err.println(String.format("instanceName-> %s enumeName:%s: enumeComment:%s 不符合规范 skipped",instanceName,enumeName,enumeComment));
           continue;
         }
-        enumBuf.append("   private final int value;");
-        enumBuf.append("   private "+enumeName+"(int value) {");
-        enumBuf.append("     this.value = value;");
-        enumBuf.append("   }\n");
-        enumBuf.append("   public int getValue() {");
-        enumBuf.append("      return value;");
-        enumBuf.append("   }");
+
         /**
          * Get the integer value of this enum value, as defined in the Thrift IDL.
          */
-
-
-
         Utils.write(enumBuf.toString(), ContentType.ENUMSINGLE,Utils.underlineToCamel(false, entryTemp.getKey(), true));
       }
     }
