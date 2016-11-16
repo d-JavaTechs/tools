@@ -2,6 +2,7 @@ package pn.eric.db.reverse;
 
 import javax.swing.filechooser.FileSystemView;
 import java.io.*;
+import java.nio.charset.Charset;
 import java.sql.*;
 import java.util.*;
 
@@ -54,7 +55,7 @@ public class DbReverserHelperBeizhi {
       confBuf.append("mode = scanAll\n\n");
       confBuf.append("## specify模式下， 反转列表\n");
       confBuf.append("tables = coupons,use_condition");
-      Utils.write(confBuf.toString(), ContentType.CONF);
+      Utils.write(confBuf.toString(), ContentType.CONF,null);
       checkResult = false;
     } else if(command.equalsIgnoreCase("enumFmt")){
       StringBuffer enumFmtBuf = new StringBuffer();
@@ -256,7 +257,7 @@ public class DbReverserHelperBeizhi {
               .append("\r\n\r\n");
     }
     poBuf.append("}\n");
-    Utils.write(poBuf.toString(), ContentType.PO);
+    Utils.write(poBuf.toString(), ContentType.PO,null);
   }
 
   /**
@@ -281,30 +282,28 @@ public class DbReverserHelperBeizhi {
               .append(",\r\n");
     }
     structBuf.append("}\n");
-    Utils.write(structBuf.toString(), ContentType.STRUCT);
+    Utils.write(structBuf.toString(), ContentType.STRUCT,null);
   }
   /**
    * 生成thrift枚举
    * @param tableMeta
    */
   public static void genEnums(Map.Entry<String, Map<String, String>> tableMeta){
-    StringBuffer enumBuf = new StringBuffer();
     Iterator<Map.Entry<String, String>> it = tableMeta.getValue().entrySet().iterator();
     String enumeComment = null;
     String enumeName = null;
     String[] enumeItems = null;
     boolean hasEnum = false;
     int i = 0;
+    StringBuffer enumBuf =null;
     while (it.hasNext()) {
       i++;
       Map.Entry<String, String> entryTemp = (Map.Entry) it.next();
       if ((entryTemp.getValue().startsWith("SMALLINT"))) {
+        enumBuf = new StringBuffer();
         hasEnum=true;
         if(hasEnum){
           enumBuf.append(String.format("package com.beizhi.cloud.%s.enums;\n", packageName.trim()));
-          enumBuf.append(String.format("public %sEnums{\n",entityName));
-          enumBuf.append("}\n");
-
         }
         String currentEnumesToGen = entryTemp.getValue();
         try {
@@ -315,7 +314,7 @@ public class DbReverserHelperBeizhi {
           enumBuf.append("/**").append("\r\n")
                   .append("*").append(enumeComment).append("\r\n")
                   .append("**/").append("\r\n");
-          enumBuf.append("enum ").append(enumeName).append("{");
+          enumBuf.append("public enum ").append(enumeName).append("{");
           String itemComment;
           String itemName;
           String itemValue;
@@ -340,9 +339,9 @@ public class DbReverserHelperBeizhi {
           continue;
         }
       }
-    }
-    if(hasEnum){
-      Utils.write(enumBuf.toString(), ContentType.ENUM);
+      if(hasEnum){
+        Utils.write(enumBuf.toString(), ContentType.ENUMSINGLE,Utils.underlineToCamel(false, entryTemp.getKey(), true));
+      }
     }
   }
 
@@ -402,7 +401,7 @@ public class DbReverserHelperBeizhi {
     }
     structBuf.replace(structBuf.length() - 5, structBuf.length() - 1, ";");
 
-    Utils.write(structBuf.toString(), ContentType.SQL);
+    Utils.write(structBuf.toString(), ContentType.SQL,null);
   }
 
 
@@ -410,6 +409,7 @@ public class DbReverserHelperBeizhi {
     CONF,
     STRUCT,
     ENUM,
+    ENUMSINGLE,
     PO,
     SQL,
     ALL
@@ -638,7 +638,7 @@ public class DbReverserHelperBeizhi {
       return type;
     }
 
-    public static void write(String content, ContentType contentType){
+    public static void write(String content, ContentType contentType, String fileName){
       String fileAbsolutePath = "";
       String fileExtension ="";
       switch (contentType){
@@ -651,6 +651,9 @@ public class DbReverserHelperBeizhi {
           break;
         case ENUM: fileAbsolutePath = desktopDir+File.separator+ "reverse-result/enum/";
           fileExtension = "Enums.java";
+          break;
+        case ENUMSINGLE: fileAbsolutePath = desktopDir+File.separator+ "reverse-result/enum/";
+          fileExtension = fileName;
           break;
         case SQL: fileAbsolutePath = desktopDir+File.separator+ "reverse-result/sql/";
           fileExtension = ".sql";
@@ -670,8 +673,7 @@ public class DbReverserHelperBeizhi {
       FileWriter fw = null;
       BufferedWriter writer = null;
       try{
-        fw = new FileWriter(file);
-        writer = new BufferedWriter(fw);
+        writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), Charset.forName("UTF-8")));
         writer.write(content);
         writer.flush();
       } catch(IOException ioe){
