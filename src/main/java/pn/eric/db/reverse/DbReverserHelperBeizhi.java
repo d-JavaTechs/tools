@@ -507,7 +507,7 @@ public class DbReverserHelperBeizhi {
         return "String";
       }
       if (type.equalsIgnoreCase("DECIMAL")) {
-        return "BigDecimal";
+        return "java.math.BigDecimal";
       }
       if (type.equalsIgnoreCase("TINYINT")
               || type.equalsIgnoreCase("SMALLINT")
@@ -515,7 +515,7 @@ public class DbReverserHelperBeizhi {
               || type.equalsIgnoreCase("INT")
               || type.equalsIgnoreCase("BIT")
               || type.equalsIgnoreCase("BIGINT")) {
-        return "Int";
+        return "int";
       }
 
       if (type.equalsIgnoreCase("TIME") || type.equalsIgnoreCase("YEAR")) {
